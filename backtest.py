@@ -20,11 +20,6 @@ he = yf.download("AAPL", start="2023-08-07", interval="15m")[
     ["Open", "High", "Low", "Close", "Volume"]
 ]
 
-msft = yf.download('MSFT', '2020-01-01', '2021-12-31')
-aapl = yf.download('AAPL', '2020-01-01', '2021-12-31')
-data = pd.concat([msft, aapl], axis=1)
-
-
 def std_3(arr, n):
     return pd.Series(arr).rolling(n).std() * 3
 
@@ -111,22 +106,5 @@ print(stats)
 #plt.show()
 
 
-class PairsTradingStrategy(Strategy):
 
-    def init(self):
-        self.msft = self.data.MSFT
-        self.aapl = self.data.AAPL
-        self.spread = self.msft - self.aapl
-
-    def next(self):
-        if self.spread.crossed_above(0):
-            self.buy('MSFT', 1)
-            self.sell('AAPL', 1)
-        elif self.spread.crossed_below(0):
-            self.buy('AAPL', 1)
-            self.sell('MSFT', 1)
-
-
-
-#bt = Backtest(data, PairsTradingStrategy, cash=100000, commission=0.001, exclusive_orders=True)
 #bt = Backtest(he, MeanReversion, cash=10000, commission=0.002)
