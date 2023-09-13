@@ -6,6 +6,7 @@ import pandas as pd
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import talib as ta
+import numpy as np
 from backtesting.test import GOOG
 import seaborn as sns
 
@@ -16,15 +17,89 @@ warnings.filterwarnings('ignore')
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
 # data imports 
-he = yf.download("AAPL", start="2023-08-07", interval="15m")[
+he = yf.download("he", start="2023-08-07", interval="15m")[
     ["Open", "High", "Low", "Close", "Volume"]
 ]
 
+stock = yf.download("he", start="2022-10-16")[
+    ["Open", "High", "Low", "Close", "Volume"]
+]
+
+def zero_line(arr):
+    return np.full_like(arr, 0)
+
+class MACD(Strategy):
+    # when macd crosses 0 from above, bear indication & vice-versa
+    macd_fast = 12
+    macd_slow = 26
+    position_size = 50
+    tp_over_macd = 10
+    tp_under_macd = 10
+
+    def init(self):
+        self.macd_close = self.data.Close
+        self.macd_values, self.macd_signal, self.macd_hist = self.I(ta.MACD, self.macd_close, self.macd_fast, self.macd_slow)
+        self.zero = self.I(zero_line, self.macd_close)
+
+    def next(self):
+        price = self.data.Close
+
+        # macd crossing zero from above, short stock
+        if crossover(self.zero, self.macd_values):
+            self.position.close()
+            self.sell(size = self.position_size)
+        
+        # if a short exists and macd stays below zero for 5 consecutive days, close short position
+        if self.position.is_short and barssince(self.macd_values > 0) == self.tp_over_macd:
+            self.position.close()
+        elif self.position.is_long and barssince(self.macd_values < 0) == self.tp_under_macd:
+            self.position.close()
+
+        # crossing from below zero line, buy stock
+        if crossover(self.macd_values, self.zero):
+            self.buy(size = self.position_size)
+
+
+def IBS(high, low, close):
+    return pd.Series((close - low)/ (high - low))
+
+class SwingTrading(Strategy):
+
+    rsi_swing_window = 5
+    open_pct_change = 250 #2.5%
+    bar_limit = 25
+    rsi_limit = 45
+    position_size = 1
+
+    def init(self):
+        self.st_close = self.data.Close
+        self.st_high = self.data.High
+        self.st_low = self.data.Low
+        self.st_open = self.data.Open
+
+        self.bar_strength = self.I(IBS, self.st_high, self.st_low, self.st_close)
+        self.st_rsi = self.I(ta.RSI, self.st_close, self.rsi_swing_window)
+
+    def next(self):
+        price = self.data.Close[-1]
+
+        ## PREDICTS A RUN UP, AFTER A GAP DOWN ON THE PREVIOUS DAY
+        # if sp gap down by a given %, yesterdays IBS 0.25 or lower, yesterdays RSI 45 or lower
+        # then buy open
+        if (self.st_close[-2]*(100-(self.open_pct_change/100)) >= self.st_open[-1]) and (self.bar_strength[-2] < self.bar_limit/100) and (self.st_rsi[-2] < self.rsi_limit):
+            self.buy(size = self.position_size)
+
+        # exit if the close is higher than yesterdays close
+        if self.st_close[-1] < self.st_close[-2]:
+            self.position.close()
+
+
 def std_3(arr, n):
-    return pd.Series(arr).rolling(n).std() * 3
+    return pd.Series(arr).rolling(n).std() * 2
 
 
 class MeanReversion(Strategy):
+
     roll = 50
 
     def init(self):
@@ -50,12 +125,6 @@ class MeanReversion(Strategy):
             )
 
 
-def optim_func(series):
-    if series['# Trades'] < 10:
-        return -1
-    return series["Equity Final [$]"] / series ["Exposure Time [%]"]
-
-
 class RsiOscillator(Strategy):
     # above a value sell, below buy
 
@@ -75,28 +144,35 @@ class RsiOscillator(Strategy):
         price = self.data.Close[-1]
 
         if self.daily_rsi[-1] > self.upper_bound and barssince(self.daily_rsi < self.upper_bound) == 3:
+            self.sell(size = self.position_size)
             self.position.close()
         
         elif self.lower_bound > self.daily_rsi[-1]:
             self.buy(size = self.position_size)
 
 
-bt = Backtest(GOOG, RsiOscillator, cash = 10000)
 
-stats, heatmap = bt.optimize(
-    upper_bound = range(55,85,5),
-    lower_bound = range(10,45,5),
-    rsi_window = 14,
-    position_size = range(1, 10, 1),
-    maximize = 'Sharpe Ratio',
-    #constraint = lambda param: param.upper_bound > param.lower_bound,
-    return_heatmap = True,
-    max_tries = 100
+def optim_func(series):
+    if series['# Trades'] < 10:
+        return -1
+    return series["Equity Final [$]"] / series ["Exposure Time [%]"]
+
+bt = Backtest(stock, MACD, commission = 0.002, cash = 100000)
+
+stats = bt.optimize(
+    tp_over_macd = range(5,20,1),
+    tp_under_macd = range(5,20,1),
+    position_size = range(25,100,5),
+    maximize = optim_func,
+    #constraint = lambda param: param.macd_fast < param.macd_slow,
+    #return_heatmap = True,
+    max_tries = 200
 )
 
-
+#stats = bt.run()
 bt.plot()
 print(stats)
+
 #print(heatmap)
 
 #plot_heatmaps(heatmap, agg="mean")
@@ -104,7 +180,3 @@ print(stats)
 #hm = heatmap.groupby(["upper_bound", "lower_bound"]).mean().unstack()
 #sns.heatmap(hm, cmap = 'plasma')
 #plt.show()
-
-
-
-#bt = Backtest(he, MeanReversion, cash=10000, commission=0.002)
