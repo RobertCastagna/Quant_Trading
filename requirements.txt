@@ -1,0 +1,11 @@
+streamlit
+numpy
+matplotlib
+datetime
+talib
+pandas
+yfinance
+backtesting
+datetime
+backtest 
+
