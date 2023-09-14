@@ -2,7 +2,6 @@ streamlit
 numpy
 matplotlib
 datetime
-talib
 pandas
 yfinance
 backtesting
