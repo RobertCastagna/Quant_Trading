@@ -25,8 +25,7 @@ stock = yf.download("he", start="2022-10-16")[
     ["Open", "High", "Low", "Close", "Volume"]
 ]
 
-def zero_line(arr):
-    return np.full_like(arr, 0)
+
 
 class MACD(Strategy):
     # when macd crosses 0 from above, bear indication & vice-versa
@@ -36,7 +35,12 @@ class MACD(Strategy):
     tp_over_macd = 10
     tp_under_macd = 10
 
+
+    
     def init(self):
+        def zero_line(arr):
+            return np.full_like(arr, 0)
+        
         self.macd_close = self.data.Close
         self.macd_values, self.macd_signal, self.macd_hist = self.I(ta.MACD, self.macd_close, self.macd_fast, self.macd_slow)
         self.zero = self.I(zero_line, self.macd_close)
@@ -44,7 +48,7 @@ class MACD(Strategy):
     def next(self):
         price = self.data.Close
 
-        # macd crossing zero from above, short stock
+        # macd crossing zero from above, short stock 
         if crossover(self.zero, self.macd_values):
             self.position.close()
             self.sell(size = self.position_size)
@@ -60,9 +64,6 @@ class MACD(Strategy):
             self.buy(size = self.position_size)
 
 
-def IBS(high, low, close):
-    return pd.Series((close - low)/ (high - low))
-
 class SwingTrading(Strategy):
 
     rsi_swing_window = 5
@@ -72,6 +73,9 @@ class SwingTrading(Strategy):
     position_size = 1
 
     def init(self):
+        def IBS(high, low, close):
+            return pd.Series((close - low)/ (high - low))
+        
         self.st_close = self.data.Close
         self.st_high = self.data.High
         self.st_low = self.data.Low
@@ -94,17 +98,17 @@ class SwingTrading(Strategy):
             self.position.close()
 
 
-def std_3(arr, n):
-    return pd.Series(arr).rolling(n).std() * 2
-
-
 class MeanReversion(Strategy):
 
     roll = 50
-
+    
+    
     def init(self):
+        
+        def std_3(arr, n):
+            return pd.Series(arr).rolling(n).std() * 2
+        
         self.he = self.data.Close
-
         self.he_mean = self.I(SMA, self.he, self.roll)
         self.he_std = self.I(std_3, self.he, self.roll)
         self.he_upper = self.he_mean + self.he_std
@@ -135,9 +139,6 @@ class RsiOscillator(Strategy):
 
     def init(self):
         self.daily_rsi = self.I(ta.RSI, self.data.Close, self.rsi_window)
-        self.weekly_rsi = resample_apply(
-            "W-FRI", ta.RSI, self.data.Close, self.rsi_window
-        )
 
     def next(self):
         
@@ -157,21 +158,21 @@ def optim_func(series):
         return -1
     return series["Equity Final [$]"] / series ["Exposure Time [%]"]
 
-bt = Backtest(stock, MACD, commission = 0.002, cash = 100000)
+#bt = Backtest(stock, SwingTrading, commission = 0.002, cash = 100000)
 
-stats = bt.optimize(
-    tp_over_macd = range(5,20,1),
-    tp_under_macd = range(5,20,1),
-    position_size = range(25,100,5),
-    maximize = optim_func,
-    #constraint = lambda param: param.macd_fast < param.macd_slow,
-    #return_heatmap = True,
-    max_tries = 200
-)
+# #stats = bt.optimize(
+#     tp_over_macd = range(5,20,1),
+#     tp_under_macd = range(5,20,1),
+#     position_size = range(25,100,5),
+#     maximize = optim_func,
+#     #constraint = lambda param: param.macd_fast < param.macd_slow,
+#     #return_heatmap = True,
+#     max_tries = 200
+# )
 
 #stats = bt.run()
-bt.plot()
-print(stats)
+# bt.plot()
+# print(stats)
 
 #print(heatmap)
 
