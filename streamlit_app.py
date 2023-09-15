@@ -56,7 +56,7 @@ stock = indicator_data.set_index('Date')
 
 
 
-# also get only todays data and post dataframe of live open, close, etc..
+# get only todays data and post dataframe of live open, close, etc..
 
 tickerData = yf.Ticker(ticker)
 Data = tickerData.history(period='2d',interval='5m')
@@ -72,7 +72,7 @@ filtered_df['TimeOfDay'] = filtered_df['TimeOfDay'].dt.time
 filtered_df['TimeOfDay'] = filtered_df['TimeOfDay'].apply(lambda x: str(x))
 filtered_df = filtered_df.set_index('TimeOfDay').drop('Datetime', axis = 1)
 
-st.dataframe(filtered_df.iloc[0])
+st.dataframe(filtered_df.iloc[0].T)
 
 fig, ax1= plt.subplots()
 plt.title(f"Today's {ticker} Data")
