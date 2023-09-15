@@ -43,7 +43,7 @@ filtered_df = filtered_df.set_index('TimeOfDay').drop('Datetime', axis = 1)
 # output securites basics for 2 day history
 basics_data = yf.Ticker(ticker)
 basics = basics_data.history(period='2d', interval='1d')
-st.dataframe(basics.T)
+st.dataframe(basics, basics.T)
 
 # plot daily price graph
 fig, ax1= plt.subplots()
