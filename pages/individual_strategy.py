@@ -22,7 +22,7 @@ ticker = st.selectbox(
     (options))
 
 
-lookback_duration = st.number_input("How many calendar days of history do you want to chart and test?", min_value=40, max_value=365, step=7)
+lookback_duration = st.number_input("How many calendar days of history do you want to chart and test?", min_value=50, max_value=365, step=7)
 
 
 # get data based on time interval until today
