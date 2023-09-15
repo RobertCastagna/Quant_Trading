@@ -8,3 +8,4 @@ backtesting
 datetime
 ta-lib-bin
 seaborn
+openpyxl
