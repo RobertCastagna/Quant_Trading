@@ -33,8 +33,6 @@ stock = yf.download(ticker, start=one_month_lag_date)[
     ["Open", "High", "Low", "Close", "Volume"]
 ].reset_index()
 
-# pick the strategy and only run code for a given strategy
-strat = st.selectbox("pick a strategy:", ('','SwingTrading', 'MACD', 'MeanReversion', 'RsiOscillator'))
 
 # Calculate the RSI indicator 
 macd, signal, hist = ta.MACD(stock['Close'], fastperiod=12, slowperiod=26, signalperiod=9)

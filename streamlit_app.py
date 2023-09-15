@@ -11,21 +11,35 @@ from backtesting.test import SMA
 from datetime import date
 from backtest import MACD, MeanReversion, SwingTrading, RsiOscillator
 
-# print daily chart
+# pick security and time frame
 
 ticker_options = pd.read_excel('indicators.xlsx')
 
-options = ', '.join(ticker_options['tickers'])
+options = ticker_options['tickers']
 
 ticker = st.selectbox(
     'Which Security are we lookin at losing money on today?',
     (options))
 
+lookback_duration = st.number_input("How many calendar days of history do you want to chart and test?", min_value=90, max_value=365, step=7)
+
+# get data for that security and timeframe
+
+today = date.today() - dt.timedelta(lookback_duration)
+one_month_lag_date = today.strftime('%Y-%m-%d')
+
+stock = yf.download(ticker, start=one_month_lag_date)[
+    ["Open", "High", "Low", "Close", "Volume"]
+].reset_index()
+
+st.dataframe(stock)
+
+# also get only todays data and post dataframe of live open, close, etc..
+
 tickerData = yf.Ticker(ticker)
-Data = tickerData.history(period='30d',interval='5m')
+Data = tickerData.history(period='2d',interval='5m')
 
 todayData = Data.reset_index()
-todayData = todayData[['Datetime','Close']]
 
 todayData['Datetime'] = todayData['Datetime'].dt.tz_localize(None) 
 todayData['TimeOfDay'] = todayData['Datetime'].apply(lambda x: pd.Timestamp(x))
@@ -35,6 +49,8 @@ filtered_df = todayData[todayData['Datetime'] > today - dt.timedelta(1)]
 filtered_df['TimeOfDay'] = filtered_df['TimeOfDay'].dt.time
 filtered_df['TimeOfDay'] = filtered_df['TimeOfDay'].apply(lambda x: str(x))
 filtered_df = filtered_df.set_index('TimeOfDay').drop('Datetime', axis = 1)
+
+st.dataframe(filtered_df)
 
 fig, ax1= plt.subplots()
 plt.title(f"Today's {ticker} Data")
@@ -48,14 +64,7 @@ st.pyplot(fig)
 
 #  this will be the run through each of our strategies and a coloured button will be green or red if it has shown a buy signal on the day
 
-lookback_duration = st.number_input("How many calendar days of history do you want to chart and test?", min_value=90, max_value=365, step=7)
 
-today = date.today() - dt.timedelta(lookback_duration)
-one_month_lag_date = today.strftime('%Y-%m-%d')
-
-stock = yf.download(ticker, start=one_month_lag_date)[
-    ["Open", "High", "Low", "Close", "Volume"]
-].reset_index()
 
 
 # Calculate the indicators using TA-Lib
