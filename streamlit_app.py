@@ -120,5 +120,6 @@ def highlight(col):
                 return 'background-color: green'
             else: ''
 
+st.dataframe(stock_output)
 st.dataframe(stock_output.style.apply(highlight))
 
