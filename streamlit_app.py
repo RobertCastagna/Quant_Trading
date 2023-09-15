@@ -113,7 +113,7 @@ def highlight(col):
             else: ''
             
     if col.name == 'MACD':
-        for c in col.value:
+        for c in col.values:
             if c < 0:
                 return 'background-color: red'
             if c > 0:
