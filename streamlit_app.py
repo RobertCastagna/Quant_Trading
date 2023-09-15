@@ -46,7 +46,7 @@ ax1.plot(filtered_df['Close'])
 st.pyplot(fig)
 
 
-#   this will be the run through each of our strategies and a coloured button will be green or red if it has shown a buy signal on the day
+#  this will be the run through each of our strategies and a coloured button will be green or red if it has shown a buy signal on the day
 
 lookback_duration = st.number_input("How many calendar days of history do you want to chart and test?", min_value=90, max_value=365, step=7)
 
@@ -76,4 +76,4 @@ stock['Date'] = stock['Date'].dt.date
 #stock = stock[stock['MACD'].notna()]
 stock = stock.set_index('Date')
 
-
+st.dataframe(stock)
