@@ -42,11 +42,6 @@ filtered_df['TimeOfDay'] = filtered_df['TimeOfDay'].dt.time
 filtered_df['TimeOfDay'] = filtered_df['TimeOfDay'].apply(lambda x: str(x))
 filtered_df = filtered_df.set_index('TimeOfDay').drop('Datetime', axis = 1)
 
-# output securites basics for 2 day history
-basics_data = yf.Ticker(ticker)
-basics = basics_data.history(period='2d', interval='1d')
-st.dataframe(basics)
-
 
 # plotly graph
 
@@ -70,6 +65,11 @@ fig_candle.add_trace(price_chart, secondary_y=True)
 fig_candle.add_trace(volume_bars, secondary_y=False)
 
 st.plotly_chart(fig_candle)
+
+# output securites basics for 2 day history
+basics_data = yf.Ticker(ticker)
+basics = basics_data.history(period='2d', interval='1d')
+st.dataframe(basics)
 
 
 
@@ -100,16 +100,6 @@ indicator_data['Date'] = indicator_data['Date'].dt.tz_localize(None)
 indicator_data['Date'] = indicator_data['Date'].apply(lambda x: pd.Timestamp(x))
 indicator_data['Date'] = indicator_data['Date'].dt.date
 stock = indicator_data.set_index('Date')
-st.dataframe(stock[['RSI','MACD']])
 
-
-
-
-
-
-
-
-
-
-
+st.dataframe(stock[['RSI','MACD']].sort_index(ascending=False))
 
