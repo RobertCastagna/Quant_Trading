@@ -114,4 +114,4 @@ def highlight(col):
         for c in col.values:
             return ['background-color: red' if c > 0 else 'background-color: green' if c < 0 else '' for c in col.values]
 
-st.dataframe(stock_output.style.apply(highlight))
+st.dataframe(stock_output.style.apply(highlight), use_container_width = True)
