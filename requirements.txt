@@ -6,4 +6,3 @@ yfinance
 backtesting
 datetime
 ta-lib-bin
-streamlib
