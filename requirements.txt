@@ -7,3 +7,4 @@ yfinance
 backtesting
 datetime
 ta-lib-bin
+seaborn
