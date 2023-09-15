@@ -9,4 +9,4 @@ dependencies:
 - backtesting
 - datetime
 - backtest 
-- -c conda-forge ta-lib
+- ta-lib-bin
