@@ -46,14 +46,12 @@ st.plotly_chart(fig)
 
 lower_bound, upper_bound = st.select_slider(
     'Select RSI bounds',
-    options=range(10,90,5),
+    options=range(10,95,5),
     value=(RsiOscillator.lower_bound, RsiOscillator.upper_bound))
 
 # Calculate the RSI indicator 
 macd, signal, hist = ta.MACD(stock['Close'], fastperiod=12, slowperiod=26, signalperiod=9)
 daily_rsi = ta.RSI(stock['Close'], 14)
-upper_bound = RsiOscillator.upper_bound
-lower_bound = RsiOscillator.lower_bound
 stock['RSI'] = daily_rsi
 
 # Add the MACD indicator to the DataFrame
