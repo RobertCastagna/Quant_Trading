@@ -1,0 +1,9 @@
+streamlit
+numpy
+matplotlib
+datetime
+pandas
+yfinance
+backtesting
+datetime
+ta-lib-bin
