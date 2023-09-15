@@ -32,17 +32,16 @@ indicator_data = yf.download(ticker, start=one_month_lag_date)[
     ["Open", "High", "Low", "Close", "Volume"]
 ].reset_index()
 
-#st.dataframe(indicator_data)
-# here, use indicator_data dataframe to calculate all indicators and pass trade signals to web
+# here, use indicator_data dataframe to calculate all indicators and pass daily trade signals to web
 
-# Calculate the indicators using TA-Lib
+# Calculate RSI
 macd, signal, hist = ta.MACD(indicator_data['Close'], fastperiod=12, slowperiod=26, signalperiod=9)
 daily_rsi = ta.RSI(indicator_data['Close'], 14)
 upper_bound = RsiOscillator.upper_bound
 lower_bound = RsiOscillator.lower_bound
 indicator_data['RSI'] = daily_rsi
 
-# Add the MACD indicator to the DataFrame
+# Add the MACD indicator 
 indicator_data['MACD'] = macd
 indicator_data['signal'] = signal
 indicator_data['hist'] = hist
@@ -50,10 +49,12 @@ indicator_data['hist'] = hist
 indicator_data['Date'] = indicator_data['Date'].dt.tz_localize(None) 
 indicator_data['Date'] = indicator_data['Date'].apply(lambda x: pd.Timestamp(x))
 indicator_data['Date'] = indicator_data['Date'].dt.date
-#stock = stock[stock['MACD'].notna()]
 stock = indicator_data.set_index('Date')
+#st.dataframe(stock['RSI','MACD'])
 
-st.dataframe(stock)
+
+
+
 
 # also get only todays data and post dataframe of live open, close, etc..
 
@@ -71,7 +72,7 @@ filtered_df['TimeOfDay'] = filtered_df['TimeOfDay'].dt.time
 filtered_df['TimeOfDay'] = filtered_df['TimeOfDay'].apply(lambda x: str(x))
 filtered_df = filtered_df.set_index('TimeOfDay').drop('Datetime', axis = 1)
 
-st.dataframe(filtered_df)
+st.dataframe(filtered_df.iloc[0])
 
 fig, ax1= plt.subplots()
 plt.title(f"Today's {ticker} Data")
