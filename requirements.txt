@@ -7,4 +7,3 @@ backtesting
 datetime
 ta-lib-bin
 streamlib
-streamlit
