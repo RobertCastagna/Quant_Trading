@@ -106,19 +106,12 @@ stock_output = stock[['RSI','MACD']].sort_index(ascending=False)
 def highlight(col):
     if col.name == 'RSI':
         for c in col.values:
-            if c >= RsiOscillator.upper_bound:
-                return 'background-color: red'
-            if c <= RsiOscillator.lower_bound:
-                return 'background-color: green'
-            else: ''
+            return ['background-color: red' if c >= RsiOscillator.upper_bound else 'background-color: green' if c <= RsiOscillator.lower_bound else '' for c in col.values]
             
     if col.name == 'MACD':
         for c in col.values:
-            if c < 0:
-                return 'background-color: red'
-            if c > 0:
-                return 'background-color: green'
-            else: ''
+            return ['background-color: red' if c > 0 else 'background-color: green' if c < 0 else '' for c in col.values]
+
 
 st.dataframe(stock_output)
 st.dataframe(stock_output.style.apply(highlight))
