@@ -41,6 +41,7 @@ fig = go.Figure(data=[go.Candlestick(x=stock.index,
                                      low=stock['Low'],
                                      close=stock['Close'])])
 
+st.pyplot(fig)
 
 
 # Calculate the RSI indicator 
@@ -58,7 +59,6 @@ stock['hist'] = hist
 stock['Date'] = stock['Date'].dt.tz_localize(None) 
 stock['Date'] = stock['Date'].apply(lambda x: pd.Timestamp(x))
 stock['Date'] = stock['Date'].dt.date
-#stock = stock[stock['MACD'].notna()]
 stock = stock.set_index('Date')
 
 
@@ -75,6 +75,7 @@ st.pyplot(fig_rsi)
 # Plot MACD
 fig_macd, ax_macd= plt.subplots()
 plt.xticks(rotation=90)
+stock = stock[stock['MACD'].notna()]
 ax_macd.plot(stock['MACD'], label='MACD')
 ax_macd.plot(stock['signal'], label='Signal')
 ax_macd.bar(stock.index, stock['hist'], color = 'green', tick_label = stock.index)
