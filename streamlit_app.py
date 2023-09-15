@@ -55,7 +55,7 @@ st.pyplot(fig)
 
 
 
-lookback_duration = st.number_input("How many calendar days of history do you want to chart and test?", min_value=90, max_value=365, step=7)
+lookback_duration = st.number_input("Change timeframe for trades?", min_value=90, max_value=365, step=7)
 
 # get data for input security and timeframe
 
@@ -84,7 +84,7 @@ indicator_data['Date'] = indicator_data['Date'].dt.tz_localize(None)
 indicator_data['Date'] = indicator_data['Date'].apply(lambda x: pd.Timestamp(x))
 indicator_data['Date'] = indicator_data['Date'].dt.date
 stock = indicator_data.set_index('Date')
-st.dataframe(stock['RSI','MACD'])
+st.dataframe(stock[['RSI','MACD']])
 
 
 
