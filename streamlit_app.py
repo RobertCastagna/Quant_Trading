@@ -31,7 +31,7 @@ Data = tickerData.history(period='2d')
 
 todayData = Data.reset_index()
 
-todayData['Datetime'] = todayData['Datetime'].dt.tz_localize(None) 
+#todayData['Datetime'] = todayData['Datetime'].dt.tz_localize(None) 
 todayData['TimeOfDay'] = todayData['Datetime'].apply(lambda x: pd.Timestamp(x))
 
 today = dt.datetime.today()
