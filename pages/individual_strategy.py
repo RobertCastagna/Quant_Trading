@@ -14,7 +14,7 @@ from backtest import MACD, MeanReversion, SwingTrading, RsiOscillator
 # pick ticker and time interval
 ticker_options = pd.read_excel('indicators.xlsx')
 
-options = ', '.join(ticker_options['tickers'])
+options = ticker_options['tickers']
 
 ticker = st.selectbox(
     'Which Security are we lookin at losing money on today?',
@@ -22,7 +22,6 @@ ticker = st.selectbox(
 
 
 lookback_duration = st.number_input("How many calendar days of history do you want to chart and test?", min_value=90, max_value=365, step=7)
-
 
 
 # get data based on time interval until today

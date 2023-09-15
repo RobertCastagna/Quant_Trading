@@ -28,9 +28,30 @@ lookback_duration = st.number_input("How many calendar days of history do you wa
 today = date.today() - dt.timedelta(lookback_duration)
 one_month_lag_date = today.strftime('%Y-%m-%d')
 
-stock = yf.download(ticker, start=one_month_lag_date)[
+indicator_data = yf.download(ticker, start=one_month_lag_date)[
     ["Open", "High", "Low", "Close", "Volume"]
 ].reset_index()
+
+#st.dataframe(indicator_data)
+# here, use indicator_data dataframe to calculate all indicators and pass trade signals to web
+
+# Calculate the indicators using TA-Lib
+macd, signal, hist = ta.MACD(indicator_data['Close'], fastperiod=12, slowperiod=26, signalperiod=9)
+daily_rsi = ta.RSI(indicator_data['Close'], 14)
+upper_bound = RsiOscillator.upper_bound
+lower_bound = RsiOscillator.lower_bound
+indicator_data['RSI'] = daily_rsi
+
+# Add the MACD indicator to the DataFrame
+indicator_data['MACD'] = macd
+indicator_data['signal'] = signal
+indicator_data['hist'] = hist
+
+indicator_data['Date'] = indicator_data['Date'].dt.tz_localize(None) 
+indicator_data['Date'] = indicator_data['Date'].apply(lambda x: pd.Timestamp(x))
+indicator_data['Date'] = indicator_data['Date'].dt.date
+#stock = stock[stock['MACD'].notna()]
+stock = indicator_data.set_index('Date')
 
 st.dataframe(stock)
 
@@ -62,27 +83,7 @@ ax1.plot(filtered_df['Close'])
 st.pyplot(fig)
 
 
-#  this will be the run through each of our strategies and a coloured button will be green or red if it has shown a buy signal on the day
 
 
 
 
-# Calculate the indicators using TA-Lib
-macd, signal, hist = ta.MACD(stock['Close'], fastperiod=12, slowperiod=26, signalperiod=9)
-daily_rsi = ta.RSI(stock['Close'], 14)
-upper_bound = RsiOscillator.upper_bound
-lower_bound = RsiOscillator.lower_bound
-stock['RSI'] = daily_rsi
-
-# Add the MACD indicator to the DataFrame
-stock['MACD'] = macd
-stock['signal'] = signal
-stock['hist'] = hist
-
-stock['Date'] = stock['Date'].dt.tz_localize(None) 
-stock['Date'] = stock['Date'].apply(lambda x: pd.Timestamp(x))
-stock['Date'] = stock['Date'].dt.date
-#stock = stock[stock['MACD'].notna()]
-stock = stock.set_index('Date')
-
-st.dataframe(stock)
