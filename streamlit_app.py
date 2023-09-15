@@ -110,7 +110,6 @@ def highlight(col):
                 return 'background-color: red'
             if c <= RsiOscillator.lower_bound:
                 return 'background-color: green'
-
             else: ''
             
     if col.name == 'MACD':
@@ -119,7 +118,7 @@ def highlight(col):
                 return 'background-color: red'
             if c > 0:
                 return 'background-color: green'
-
+            else: ''
 
 st.dataframe(stock_output.style.apply(highlight))
 
