@@ -22,7 +22,7 @@ ticker = st.selectbox(
     (options))
 
 
-lookback_duration = st.number_input("How many calendar days of history do you want to chart and test?", min_value=90, max_value=365, step=7)
+lookback_duration = st.number_input("How many calendar days of history do you want to chart and test?", min_value=40, max_value=365, step=7)
 
 
 # get data based on time interval until today
@@ -43,6 +43,11 @@ fig = go.Figure(data=[go.Candlestick(x=stock.index,
 
 st.plotly_chart(fig)
 
+
+lower_bound, upper_bound = st.select_slider(
+    'Select RSI bounds',
+    options=range(10,90,5),
+    value=(RsiOscillator.lower_bound, RsiOscillator.upper_bound))
 
 # Calculate the RSI indicator 
 macd, signal, hist = ta.MACD(stock['Close'], fastperiod=12, slowperiod=26, signalperiod=9)
