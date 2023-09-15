@@ -73,18 +73,6 @@ st.plotly_chart(fig_candle)
 
 
 
-# plot daily price graph
-fig, ax1= plt.subplots()
-plt.title(f"Today's {ticker} Data")
-plt.style.use('fivethirtyeight')
-plt.xticks(rotation=90)
-ax1.set_xticklabels(labels=filtered_df.index, fontdict={"fontsize": 5})
-ax1.plot(filtered_df['Close'])
-
-st.pyplot(fig)
-
-
-
 # get data for input security and timeframe
 
 today = date.today() - dt.timedelta(90)
