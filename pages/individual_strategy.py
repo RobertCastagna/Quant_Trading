@@ -41,7 +41,7 @@ fig = go.Figure(data=[go.Candlestick(x=stock.index,
                                      low=stock['Low'],
                                      close=stock['Close'])])
 
-st.pyplot(fig)
+st.plotly_chart(fig)
 
 
 # Calculate the RSI indicator 
