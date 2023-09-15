@@ -63,7 +63,9 @@ fig_candle = go.Figure(price_chart)
 fig_candle = make_subplots(specs=[[{"secondary_y": True}]])
 fig_candle.add_trace(price_chart, secondary_y=True)
 fig_candle.add_trace(volume_bars, secondary_y=False)
-
+fig_candle.update_layout(
+    title=dict(text=f"{ticker} Daily Data", font=dict(size=24), automargin=True, yref='paper')
+)
 st.plotly_chart(fig_candle)
 
 # output securites basics for 2 day history
@@ -112,7 +114,4 @@ def highlight(col):
         for c in col.values:
             return ['background-color: red' if c > 0 else 'background-color: green' if c < 0 else '' for c in col.values]
 
-
-st.dataframe(stock_output)
 st.dataframe(stock_output.style.apply(highlight))
-
