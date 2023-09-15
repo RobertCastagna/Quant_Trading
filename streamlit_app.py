@@ -50,7 +50,7 @@ st.dataframe(basics)
 
 # plotly graph
 
-price_chart = go.scatter.Line(
+price_chart = go.Scatter(
     x=filtered_df.index,
     y=filtered_df.Close
 )
@@ -66,7 +66,9 @@ volume_bars = go.Bar(
 
 fig_candle = go.Figure(price_chart)
 fig_candle = make_subplots(specs=[[{"secondary_y": True}]])
-fig_candle.add_trace(volume_bars, secondary_y=True)
+fig_candle.add_trace(price_chart, secondary_y=True)
+fig_candle.add_trace(volume_bars, secondary_y=False)
+
 st.plotly_chart(fig_candle)
 
 
