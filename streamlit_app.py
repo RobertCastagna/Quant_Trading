@@ -31,8 +31,8 @@ Data = tickerData.history(period='2d')
 
 todayData = Data.reset_index()
 
-#todayData['Datetime'] = todayData['Datetime'].dt.tz_localize(None) 
-#todayData['TimeOfDay'] = todayData['Datetime'].apply(lambda x: pd.Timestamp(x))
+todayData['Datetime'] = todayData['Datetime'].dt.tz_localize(None) 
+todayData['TimeOfDay'] = todayData['Datetime'].apply(lambda x: pd.Timestamp(x))
 
 today = dt.datetime.today()
 filtered_df = todayData[todayData['Datetime'] > today - dt.timedelta(2)]
@@ -40,7 +40,8 @@ filtered_df['TimeOfDay'] = filtered_df['TimeOfDay'].dt.time
 filtered_df['TimeOfDay'] = filtered_df['TimeOfDay'].apply(lambda x: str(x))
 filtered_df = filtered_df.set_index('TimeOfDay').drop('Datetime', axis = 1)
 
-daily_output_data = filtered_df.T
+# print dataframe just for open, close, volume, whatever else
+daily_output_data = Data.T
 print(daily_output_data)
 st.dataframe(daily_output_data)
 
