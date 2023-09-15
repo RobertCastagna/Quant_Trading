@@ -27,7 +27,7 @@ ticker = st.selectbox(
 # get only todays data and post dataframe of live open, close, etc..
 
 tickerData = yf.Ticker(ticker)
-Data = tickerData.history(period='2d')
+Data = tickerData.history(period='2d',interval='5m')
 
 todayData = Data.reset_index()
 
@@ -35,16 +35,17 @@ todayData['Datetime'] = todayData['Datetime'].dt.tz_localize(None)
 todayData['TimeOfDay'] = todayData['Datetime'].apply(lambda x: pd.Timestamp(x))
 
 today = dt.datetime.today()
-filtered_df = todayData[todayData['Datetime'] > today - dt.timedelta(2)]
+filtered_df = todayData[todayData['Datetime'] > today - dt.timedelta(1)]
 filtered_df['TimeOfDay'] = filtered_df['TimeOfDay'].dt.time
 filtered_df['TimeOfDay'] = filtered_df['TimeOfDay'].apply(lambda x: str(x))
 filtered_df = filtered_df.set_index('TimeOfDay').drop('Datetime', axis = 1)
 
-# print dataframe just for open, close, volume, whatever else
-daily_output_data = Data.T
-print(daily_output_data)
-st.dataframe(daily_output_data)
+# output securites basics for 2 day history
+basics_data = yf.Ticker(ticker)
+basics = basics_data.history(period='2d', interval='1d')
+st.dataframe(basics.T)
 
+# plot daily price graph
 fig, ax1= plt.subplots()
 plt.title(f"Today's {ticker} Data")
 plt.style.use('fivethirtyeight')
