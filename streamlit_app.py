@@ -101,5 +101,25 @@ indicator_data['Date'] = indicator_data['Date'].apply(lambda x: pd.Timestamp(x))
 indicator_data['Date'] = indicator_data['Date'].dt.date
 stock = indicator_data.set_index('Date')
 
-st.dataframe(stock[['RSI','MACD']].sort_index(ascending=False))
+stock_output = stock[['RSI','MACD']].sort_index(ascending=False)
+
+def highlight(col):
+    if col.name == 'RSI':
+        for c in col.values:
+            if c >= RsiOscillator.upper_bound:
+                return 'background-color: red'
+            if c <= RsiOscillator.lower_bound:
+                return 'background-color: green'
+
+            else: ''
+            
+    if col.name == 'MACD':
+        for c in col.value:
+            if c < 0:
+                return 'background-color: red'
+            if c > 0:
+                return 'background-color: green'
+
+
+st.dataframe(stock_output.style.apply(highlight))
 
