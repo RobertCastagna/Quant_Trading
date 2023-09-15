@@ -54,12 +54,9 @@ st.pyplot(fig)
 
 
 
-
-lookback_duration = st.number_input("Change timeframe for trades?", min_value=90, max_value=365, step=7)
-
 # get data for input security and timeframe
 
-today = date.today() - dt.timedelta(lookback_duration)
+today = date.today() - dt.timedelta(90)
 one_month_lag_date = today.strftime('%Y-%m-%d')
 
 indicator_data = yf.download(ticker, start=one_month_lag_date)[

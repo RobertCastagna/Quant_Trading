@@ -10,6 +10,7 @@ from backtesting import Strategy, Backtest
 from backtesting.test import SMA
 from datetime import date
 from backtest import MACD, MeanReversion, SwingTrading, RsiOscillator
+import plotly.graph_objects as go
 
 # pick ticker and time interval
 ticker_options = pd.read_excel('indicators.xlsx')
@@ -31,6 +32,15 @@ one_month_lag_date = today.strftime('%Y-%m-%d')
 stock = yf.download(ticker, start=one_month_lag_date)[
     ["Open", "High", "Low", "Close", "Volume"]
 ].reset_index()
+
+# candlestick plot 
+
+fig = go.Figure(data=[go.Candlestick(x=stock.index,
+                                     open=stock['Open'],
+                                     high=stock['High'],
+                                     low=stock['Low'],
+                                     close=stock['Close'])])
+
 
 
 # Calculate the RSI indicator 

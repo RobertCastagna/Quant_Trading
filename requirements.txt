@@ -9,3 +9,4 @@ datetime
 ta-lib-bin
 seaborn
 openpyxl
+plotly
