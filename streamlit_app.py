@@ -10,6 +10,8 @@ from backtesting import Strategy, Backtest
 from backtesting.test import SMA
 from datetime import date
 from backtest import MACD, MeanReversion, SwingTrading, RsiOscillator
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 
 # pick security and time frame
 
@@ -44,7 +46,30 @@ filtered_df = filtered_df.set_index('TimeOfDay').drop('Datetime', axis = 1)
 basics_data = yf.Ticker(ticker)
 basics = basics_data.history(period='2d', interval='1d')
 st.dataframe(basics)
-st.dataframe(basics.T)
+
+
+# plotly graph
+
+price_chart = go.scatter.Line(
+    x=filtered_df.index,
+    y=filtered_df.Close
+)
+
+volume_bars = go.Bar(
+    x=filtered_df.index,
+    y=filtered_df['Volume'],
+    showlegend=False,
+    marker={
+        "color": "lightsteelblue",
+    }
+)
+
+fig_candle = go.Figure(price_chart)
+fig_candle = make_subplots(specs=[[{"secondary_y": True}]])
+fig_candle.add_trace(volume_bars, secondary_y=True)
+st.plotly_chart(fig_candle)
+
+
 
 # plot daily price graph
 fig, ax1= plt.subplots()
