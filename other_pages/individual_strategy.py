@@ -59,28 +59,33 @@ if strategy == 'MACD':
         st.dataframe(stats['_trades'][['Size', 'EntryBar', 'ExitBar',  'EntryPrice', 'ExitPrice', 'PnL', 'ReturnPct', 'EntryTime', 'ExitTime']])
         st.write("Backtesting Stats:")
         st.dataframe(stats)
-        pass
+
 elif strategy == 'MeanReversion':
     with st.spinner("testing.."):
         bt = Backtest(stock, MeanReversion, cash=100000, commission=0.002)
         stats = bt.run()
-        print(stats)
+        st.write("Trade(s) Placed:")
+        st.dataframe(stats['_trades'][['Size', 'EntryBar', 'ExitBar',  'EntryPrice', 'ExitPrice', 'PnL', 'ReturnPct', 'EntryTime', 'ExitTime']])
+        st.write("Backtesting Stats:")
         st.dataframe(stats)
-        pass
+
 elif strategy == 'SwingTrading':
     with st.spinner("testing.."):
         bt = Backtest(stock, SwingTrading, cash=100000, commission=0.002)
         stats = bt.run()
-        print(stats)
+        st.write("Trade(s) Placed:")
+        st.dataframe(stats['_trades'][['Size', 'EntryBar', 'ExitBar',  'EntryPrice', 'ExitPrice', 'PnL', 'ReturnPct', 'EntryTime', 'ExitTime']])
+        st.write("Backtesting Stats:")
         st.dataframe(stats)
-        pass
+
 elif strategy == 'RsiOscillator':
     with st.spinner("testing.."):
         bt = Backtest(stock, RsiOscillator, cash=100000, commission=0.002)
         stats = bt.run()
-        print(stats)
+        st.write("Trade(s) Placed:")
+        st.dataframe(stats['_trades'][['Size', 'EntryBar', 'ExitBar',  'EntryPrice', 'ExitPrice', 'PnL', 'ReturnPct', 'EntryTime', 'ExitTime']])
+        st.write("Backtesting Stats:")
         st.dataframe(stats)
-        pass
 
 stock = stock.reset_index()
 
