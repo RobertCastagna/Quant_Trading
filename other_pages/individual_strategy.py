@@ -6,12 +6,14 @@ import datetime as dt
 import talib as ta 
 import pandas as pd
 import yfinance as yf
+import sys
 from backtesting import Strategy, Backtest
 from backtesting.test import SMA
 from datetime import date
-from backtest import MACD, MeanReversion, SwingTrading, RsiOscillator
 import plotly.graph_objects as go
 from st_pages import Page, show_pages
+sys.path.insert(0, './other_pages')
+from backtest import MACD, MeanReversion, SwingTrading, RsiOscillator
 
 # pick security and time frame
 

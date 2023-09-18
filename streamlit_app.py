@@ -6,13 +6,15 @@ import datetime as dt
 import talib as ta 
 import pandas as pd
 import yfinance as yf
+import sys
 from backtesting import Strategy, Backtest
 from backtesting.test import SMA
 from datetime import date
-from other_pages.backtest import RsiOscillator
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 from st_pages import Page, show_pages
+sys.path.insert(0, './other_pages')
+from backtest import RsiOscillator
 
 # pick security and time frame
 
