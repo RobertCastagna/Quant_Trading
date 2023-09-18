@@ -11,6 +11,16 @@ from backtesting.test import SMA
 from datetime import date
 from backtest import MACD, MeanReversion, SwingTrading, RsiOscillator
 import plotly.graph_objects as go
+from st_pages import Page, show_pages
+
+# pick security and time frame
+
+show_pages(
+    [
+        Page("streamlit_app.py", "Home"),
+        Page("pages/individual_strategy.py", "Backtest")
+    ]
+)
 
 # pick ticker and time interval
 ticker_options = pd.read_excel('indicators.xlsx')

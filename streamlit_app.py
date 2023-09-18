@@ -9,11 +9,20 @@ import yfinance as yf
 from backtesting import Strategy, Backtest
 from backtesting.test import SMA
 from datetime import date
-from pages.backtest import MACD, MeanReversion, SwingTrading, RsiOscillator
+from other_pages.backtest import RsiOscillator
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
+from st_pages import Page, show_pages
 
 # pick security and time frame
+
+show_pages(
+    [
+        Page("streamlit_app.py", "Home"),
+        Page("pages/individual_strategy.py", "Backtest")
+    ]
+)
+
 
 ticker_options = pd.read_excel('indicators.xlsx')
 
@@ -64,7 +73,7 @@ fig_candle = make_subplots(specs=[[{"secondary_y": True}]])
 fig_candle.add_trace(price_chart, secondary_y=True)
 fig_candle.add_trace(volume_bars, secondary_y=False)
 fig_candle.update_layout(
-    title=dict(text=f"{ticker} Daily Data", font=dict(size=24), automargin=True, yref='paper')
+    title=dict(text=f"{ticker} Daily Data", font=dict(size=24), yref='paper')
 )
 st.plotly_chart(fig_candle)
 
