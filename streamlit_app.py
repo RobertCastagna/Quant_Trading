@@ -19,7 +19,7 @@ from st_pages import Page, show_pages
 show_pages(
     [
         Page("streamlit_app.py", "Home"),
-        Page("pages/individual_strategy.py", "Backtest")
+        Page("other_pages/individual_strategy.py", "Backtest")
     ]
 )
 
