@@ -10,5 +10,5 @@ ta-lib-bin
 seaborn
 openpyxl
 plotly
-st_pages
+st-pages
 sys
