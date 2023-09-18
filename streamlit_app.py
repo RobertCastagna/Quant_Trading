@@ -14,7 +14,7 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 from st_pages import Page, show_pages
 sys.path.insert(0, './other_pages')
-from backtest import RsiOscillator
+from backtest import MACD, MeanReversion, SwingTrading, RsiOscillator
 
 # pick security and time frame
 
@@ -33,8 +33,6 @@ options = ticker_options['tickers']
 ticker = st.selectbox(
     'Which Security are we lookin at losing money on today?',
     (options))
-
-
 
 
 # get only todays data and post dataframe of live open, close, etc..
@@ -82,8 +80,8 @@ st.plotly_chart(fig_candle)
 # output securites basics for 2 day history
 basics_data = yf.Ticker(ticker)
 basics = basics_data.history(period='2d', interval='1d')
-st.dataframe(basics)
-
+st.write("Securties Basics:")
+st.dataframe(basics.sort_index(ascending=False), use_container_width = True)
 
 
 # get data for input security and timeframe
@@ -94,6 +92,7 @@ one_month_lag_date = today.strftime('%Y-%m-%d')
 indicator_data = yf.download(ticker, start=one_month_lag_date)[
     ["Open", "High", "Low", "Close", "Volume"]
 ].reset_index()
+
 
 # here, use indicator_data dataframe to calculate all indicators and pass daily trade signals to web
 
@@ -112,17 +111,50 @@ indicator_data['hist'] = hist
 indicator_data['Date'] = indicator_data['Date'].dt.tz_localize(None) 
 indicator_data['Date'] = indicator_data['Date'].apply(lambda x: pd.Timestamp(x))
 indicator_data['Date'] = indicator_data['Date'].dt.date
-stock = indicator_data.set_index('Date')
 
-stock_output = stock[['RSI','MACD']].sort_index(ascending=False)
+# Calculate RSI, IBS, Gap
+rsi_swing_window = SwingTrading.rsi_swing_window
+open_pct_change = SwingTrading.open_pct_change
+bar_limit = SwingTrading.bar_limit
+rsi_limit = SwingTrading.rsi_limit
+position_size = SwingTrading.position_size
+
+def IBS(high, low, close):
+    return pd.Series((close - low)/ (high - low))
+
+st_close = indicator_data.Close
+st_high = indicator_data.High
+st_low = indicator_data.Low
+st_open = indicator_data.Open
+
+bar_strength = IBS(st_high, st_low, st_close)
+st_rsi = ta.RSI(st_close, rsi_swing_window)
+indicator_data['st_bar_strength'] = bar_strength
+indicator_data['st_rsi'] = st_rsi
+
+
+# build out indicator based trade signal buy/sell for each series of indicators 
+indicator_data['Swing_trade_signal'] = ['buy' if (indicator_data.Close.iloc[-2]*(100-(open_pct_change/100)) >= indicator_data.Open.iloc[-1]) and (indicator_data.st_bar_strength.iloc[-2] < bar_limit/100) and (indicator_data.st_rsi.iloc[-2] < rsi_limit) else 'sell' if (indicator_data.Close.iloc[-1] < indicator_data.Close.iloc[-2] and indicator_data.Close.iloc[-2] < indicator_data.Close.iloc[-3]) else 'NaN' for col in indicator_data.index]
+indicator_data['Rsi_trade_signal'] = ['buy' if indicator_data.RSI.iloc[-1] < RsiOscillator.lower_bound else 'sell' if indicator_data.RSI.iloc[-1] > RsiOscillator.upper_bound else 'NaN' for col in indicator_data.index]
+indicator_data['MACD_trade_signal'] = ['buy' if (indicator_data.MACD.iloc[-2] <= 0 and indicator_data.MACD.iloc[-1] > 0) else 'sell' if (indicator_data.MACD.iloc[-2] >= 0 and indicator_data.MACD.iloc[-1] < 0) else 'NaN' for col in indicator_data.index]
+
+
+# select key columns and format output dataframe
+stock = indicator_data.set_index('Date')
+stock_output = stock[['Rsi_trade_signal','Swing_trade_signal','MACD_trade_signal','Close','RSI','MACD','st_rsi','st_bar_strength']].sort_index(ascending=False)
 
 def highlight(col):
-    if col.name == 'RSI':
+    if col.name == 'Rsi_trade_signal':
         for c in col.values:
-            return ['background-color: red' if c >= RsiOscillator.upper_bound else 'background-color: green' if c <= RsiOscillator.lower_bound else '' for c in col.values]
+            return ['background-color: red' if c == 'sell' else 'background-color: green' if c == 'buy' else '' for c in col.values]
             
-    if col.name == 'MACD':
+    if col.name == 'MACD_trade_signal':
         for c in col.values:
-            return ['background-color: red' if c > 0 else 'background-color: green' if c < 0 else '' for c in col.values]
+            return ['background-color: red' if c == 'sell' else 'background-color: green' if c == 'buy' else '' for c in col.values]
 
-st.dataframe(stock_output.style.apply(highlight), use_container_width = True)
+    if col.name == 'Swing_trade_signal':
+        for c in col.values:
+            return ['background-color: red' if c == 'sell' else 'background-color: green' if c == 'buy' else '' for c in col.values]
+
+st.write("Indicator-based trade signals for last 2 days:")
+st.dataframe(stock_output[:2], use_container_width = True) #.style.apply(highlight)

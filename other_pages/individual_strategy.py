@@ -65,7 +65,9 @@ if strategy == 'MACD':
         st.write("Trade(s) Placed:")
         st.dataframe(stats['_trades'][['Size', 'EntryBar', 'ExitBar',  'EntryPrice', 'ExitPrice', 'PnL', 'ReturnPct', 'EntryTime', 'ExitTime']])
         st.write("Backtesting Stats:")
-        st.dataframe(stats)
+        st.dataframe(stats, use_container_width = True)
+        st.write("Optimized Model Parameters:")
+        st.write(stats['_strategy'])
 
 elif strategy == 'MeanReversion':
     with st.spinner("testing.."):
@@ -74,29 +76,44 @@ elif strategy == 'MeanReversion':
         st.write("Trade(s) Placed:")
         st.dataframe(stats['_trades'][['Size', 'EntryBar', 'ExitBar',  'EntryPrice', 'ExitPrice', 'PnL', 'ReturnPct', 'EntryTime', 'ExitTime']])
         st.write("Backtesting Stats:")
-        st.dataframe(stats)
-
+        st.dataframe(stats, use_container_width = True)
+        st.write("Optimized Model Parameters:")
+        st.write(stats['_strategy'])
+        
 elif strategy == 'SwingTrading':
     with st.spinner("testing.."):
         bt = Backtest(stock, SwingTrading, cash=100000, commission=0.002, trade_on_close=True)
-        stats = bt.optimize(position_size = range(25,100,5), maximize = optim_func, max_tries = 50)
+        stats = bt.optimize(position_size = range(25,100,5),
+                            rsi_swing_window = range(3,6,1),
+                            bar_limit = range(10,30,5),
+                            rsi_limit = range(30,50,5),
+                            maximize = optim_func, max_tries = 50)
         st.write("Trade(s) Placed:")
         st.dataframe(stats['_trades'][['Size', 'EntryBar', 'ExitBar',  'EntryPrice', 'ExitPrice', 'PnL', 'ReturnPct', 'EntryTime', 'ExitTime']])
         st.write("Backtesting Stats:")
-        st.dataframe(stats)
+        st.dataframe(stats, use_container_width = True)
+        st.write("Optimized Model Parameters:")
+        st.write(stats['_strategy'])
 
 elif strategy == 'RsiOscillator':
     with st.spinner("testing.."):
         bt = Backtest(stock, RsiOscillator, cash=100000, commission=0.002)
-        stats = bt.optimize(position_size = range(25,100,5), maximize = optim_func, max_tries = 50)
+        stats = bt.optimize(position_size = range(25,100,5),
+                            upper_bound = range(50,90,10),
+                            lower_bound = range(10,60,10),
+                            rsi_window = range(7,15,2),
+                            maximize = optim_func, max_tries = 50)
         st.write("Trade(s) Placed:")
         st.dataframe(stats['_trades'][['Size', 'EntryBar', 'ExitBar',  'EntryPrice', 'ExitPrice', 'PnL', 'ReturnPct', 'EntryTime', 'ExitTime']])
         st.write("Backtesting Stats:")
-        st.dataframe(stats)
+        st.dataframe(stats, use_container_width = True)
+        st.write("Optimized Model Parameters:")
+        st.write(stats['_strategy'])
 
 stock = stock.reset_index()
 
 # candlestick plot 
+# ADD TRADES AS VERTICAL BARS TO THE CANDLESTICKS PLOT AFTER TEST RUNS
 
 fig = go.Figure(data=[go.Candlestick(x=stock.index,
                                      open=stock['Open'],
@@ -145,7 +162,7 @@ stock = stock[stock['MACD'].notna()]
 ax_macd.plot(stock['MACD'], label='MACD')
 ax_macd.plot(stock['signal'], label='Signal')
 ax_macd.bar(stock.index, stock['hist'], color = 'green', tick_label = stock.index)
-ax_macd.set_xticklabels(labels=stock.index, fontdict={"fontsize": 8})
+ax_macd.set_xticklabels(labels=stock.index, fontdict={"fontsize": 5})
 plt.legend()
 ax_macd.axhline(y=0, color='black', linestyle='--')
 st.pyplot(fig_macd)
