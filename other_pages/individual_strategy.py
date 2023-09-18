@@ -45,6 +45,13 @@ stock = yf.download(ticker, start=one_month_lag_date)[
     ["Open", "High", "Low", "Close", "Volume"]
 ]
 
+# Backtesting section 
+
+def optim_func(series):
+    if series['# Trades'] < 10:
+        return -1
+    return series["Equity Final [$]"] / series ["Exposure Time [%]"]
+
 
 # select strategy picklist 
 strategy = st.selectbox(
@@ -54,7 +61,7 @@ strategy = st.selectbox(
 if strategy == 'MACD':
     with st.spinner("testing.."):
         bt = Backtest(stock, MACD, cash=100000, commission=0.002)
-        stats = bt.run()
+        stats = bt.optimize(position_size = range(25,100,5), maximize = optim_func, max_tries = 50)
         st.write("Trade(s) Placed:")
         st.dataframe(stats['_trades'][['Size', 'EntryBar', 'ExitBar',  'EntryPrice', 'ExitPrice', 'PnL', 'ReturnPct', 'EntryTime', 'ExitTime']])
         st.write("Backtesting Stats:")
@@ -63,7 +70,7 @@ if strategy == 'MACD':
 elif strategy == 'MeanReversion':
     with st.spinner("testing.."):
         bt = Backtest(stock, MeanReversion, cash=100000, commission=0.002)
-        stats = bt.run()
+        stats = bt.optimize(position_size = range(25,100,5), maximize = optim_func, max_tries = 50)
         st.write("Trade(s) Placed:")
         st.dataframe(stats['_trades'][['Size', 'EntryBar', 'ExitBar',  'EntryPrice', 'ExitPrice', 'PnL', 'ReturnPct', 'EntryTime', 'ExitTime']])
         st.write("Backtesting Stats:")
@@ -71,8 +78,8 @@ elif strategy == 'MeanReversion':
 
 elif strategy == 'SwingTrading':
     with st.spinner("testing.."):
-        bt = Backtest(stock, SwingTrading, cash=100000, commission=0.002)
-        stats = bt.run()
+        bt = Backtest(stock, SwingTrading, cash=100000, commission=0.002, trade_on_close=True)
+        stats = bt.optimize(position_size = range(25,100,5), maximize = optim_func, max_tries = 50)
         st.write("Trade(s) Placed:")
         st.dataframe(stats['_trades'][['Size', 'EntryBar', 'ExitBar',  'EntryPrice', 'ExitPrice', 'PnL', 'ReturnPct', 'EntryTime', 'ExitTime']])
         st.write("Backtesting Stats:")
@@ -81,7 +88,7 @@ elif strategy == 'SwingTrading':
 elif strategy == 'RsiOscillator':
     with st.spinner("testing.."):
         bt = Backtest(stock, RsiOscillator, cash=100000, commission=0.002)
-        stats = bt.run()
+        stats = bt.optimize(position_size = range(25,100,5), maximize = optim_func, max_tries = 50)
         st.write("Trade(s) Placed:")
         st.dataframe(stats['_trades'][['Size', 'EntryBar', 'ExitBar',  'EntryPrice', 'ExitPrice', 'PnL', 'ReturnPct', 'EntryTime', 'ExitTime']])
         st.write("Backtesting Stats:")

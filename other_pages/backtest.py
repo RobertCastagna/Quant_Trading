@@ -35,7 +35,6 @@ class MACD(Strategy):
     tp_over_macd = 10
     tp_under_macd = 10
 
-
     
     def init(self):
         def zero_line(arr):
@@ -101,10 +100,11 @@ class SwingTrading(Strategy):
 class MeanReversion(Strategy):
 
     roll = 50
-    
+    position_size = 1
     
     def init(self):
         
+
         def std_3(arr, n):
             return pd.Series(arr).rolling(n).std() * 2
         
@@ -120,12 +120,12 @@ class MeanReversion(Strategy):
 
         if self.he_close < self.he_lower:
             self.buy(
-                tp = self.he_mean,
+                tp = self.he_mean, size = self.position_size
             )
             
         if self.he_close > self.he_upper:
             self.sell(
-                tp = self.he_mean,
+                tp = self.he_mean, size = self.position_size
             )
 
 
@@ -157,8 +157,6 @@ def optim_func(series):
     if series['# Trades'] < 10:
         return -1
     return series["Equity Final [$]"] / series ["Exposure Time [%]"]
-
-#bt = Backtest(stock, SwingTrading, commission = 0.002, cash = 100000)
 
 # #stats = bt.optimize(
 #     tp_over_macd = range(5,20,1),
