@@ -157,4 +157,4 @@ def highlight(col):
             return ['background-color: red' if c == 'sell' else 'background-color: green' if c == 'buy' else '' for c in col.values]
 
 st.write("Indicator-based trade signals for last 2 days:")
-st.dataframe(stock_output[:2], use_container_width = True) #.style.apply(highlight)
+st.dataframe(stock_output[:2].style.apply(highlight), use_container_width = True) #
