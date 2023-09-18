@@ -31,7 +31,46 @@ one_month_lag_date = today.strftime('%Y-%m-%d')
 
 stock = yf.download(ticker, start=one_month_lag_date)[
     ["Open", "High", "Low", "Close", "Volume"]
-].reset_index()
+]
+
+
+# select strategy picklist 
+strategy = st.selectbox(
+    'Strategy to test?',
+    ('MACD','MeanReversion','SwingTrading','RsiOscillator'))
+
+if strategy == 'MACD':
+    with st.spinner("testing.."):
+        bt = Backtest(stock, MACD, cash=100000, commission=0.002)
+        stats = bt.run()
+        st.write("Trade(s) Placed:")
+        st.dataframe(stats['_trades'][['Size', 'EntryBar', 'ExitBar',  'EntryPrice', 'ExitPrice', 'PnL', 'ReturnPct', 'EntryTime', 'ExitTime']])
+        st.write("Backtesting Stats:")
+        st.dataframe(stats)
+        pass
+elif strategy == 'MeanReversion':
+    with st.spinner("testing.."):
+        bt = Backtest(stock, MeanReversion, cash=100000, commission=0.002)
+        stats = bt.run()
+        print(stats)
+        st.dataframe(stats)
+        pass
+elif strategy == 'SwingTrading':
+    with st.spinner("testing.."):
+        bt = Backtest(stock, SwingTrading, cash=100000, commission=0.002)
+        stats = bt.run()
+        print(stats)
+        st.dataframe(stats)
+        pass
+elif strategy == 'RsiOscillator':
+    with st.spinner("testing.."):
+        bt = Backtest(stock, RsiOscillator, cash=100000, commission=0.002)
+        stats = bt.run()
+        print(stats)
+        st.dataframe(stats)
+        pass
+
+stock = stock.reset_index()
 
 # candlestick plot 
 

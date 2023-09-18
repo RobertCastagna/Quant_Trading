@@ -9,7 +9,7 @@ import yfinance as yf
 from backtesting import Strategy, Backtest
 from backtesting.test import SMA
 from datetime import date
-from backtest import MACD, MeanReversion, SwingTrading, RsiOscillator
+from pages.backtest import MACD, MeanReversion, SwingTrading, RsiOscillator
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 

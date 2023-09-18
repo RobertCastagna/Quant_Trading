@@ -17,13 +17,13 @@ warnings.filterwarnings('ignore')
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
 # data imports 
-he = yf.download("he", start="2023-08-07", interval="15m")[
-    ["Open", "High", "Low", "Close", "Volume"]
-]
+# he = yf.download("he", start="2023-08-07", interval="15m")[
+#     ["Open", "High", "Low", "Close", "Volume"]
+# ]
 
-stock = yf.download("he", start="2022-10-16")[
-    ["Open", "High", "Low", "Close", "Volume"]
-]
+# stock = yf.download("he", start="2022-10-16")[
+#     ["Open", "High", "Low", "Close", "Volume"]
+# ]
 
 
 
