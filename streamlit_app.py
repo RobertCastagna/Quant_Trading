@@ -137,11 +137,11 @@ indicator_data['st_rsi'] = st_rsi
 indicator_data['Swing_trade_signal'] = ['buy' if (indicator_data.Close.iloc[-2]*(100-(open_pct_change/100)) >= indicator_data.Open.iloc[-1]) and (indicator_data.st_bar_strength.iloc[-2] < bar_limit/100) and (indicator_data.st_rsi.iloc[-2] < rsi_limit) else 'sell' if (indicator_data.Close.iloc[-1] < indicator_data.Close.iloc[-2] and indicator_data.Close.iloc[-2] < indicator_data.Close.iloc[-3]) else 'NaN' for col in indicator_data.index]
 indicator_data['Rsi_trade_signal'] = ['buy' if indicator_data.RSI.iloc[-1] < RsiOscillator.lower_bound else 'sell' if indicator_data.RSI.iloc[-1] > RsiOscillator.upper_bound else 'NaN' for col in indicator_data.index]
 indicator_data['MACD_trade_signal'] = ['buy' if (indicator_data.MACD.iloc[-2] <= 0 and indicator_data.MACD.iloc[-1] > 0) else 'sell' if (indicator_data.MACD.iloc[-2] >= 0 and indicator_data.MACD.iloc[-1] < 0) else 'NaN' for col in indicator_data.index]
-
+indicator_data["Pct_Change_Close"] = indicator_data['Close'].pct_change()
 
 # select key columns and format output dataframe
 stock = indicator_data.set_index('Date')
-stock_output = stock[['Rsi_trade_signal','Swing_trade_signal','MACD_trade_signal','Close','RSI','MACD','st_rsi','st_bar_strength']].sort_index(ascending=False)
+stock_output = stock[['Rsi_trade_signal','Swing_trade_signal','MACD_trade_signal','Pct_Change_Close','RSI','MACD','st_rsi','st_bar_strength']].sort_index(ascending=False)
 
 def highlight(col):
     if col.name == 'Rsi_trade_signal':

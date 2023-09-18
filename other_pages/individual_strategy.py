@@ -11,6 +11,7 @@ from backtesting import Strategy, Backtest
 from backtesting.test import SMA
 from datetime import date
 import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 from st_pages import Page, show_pages
 sys.path.insert(0, './other_pages')
 from backtest import MACD, MeanReversion, SwingTrading, RsiOscillator
@@ -62,7 +63,7 @@ if strategy == 'MACD':
     with st.spinner("testing.."):
         bt = Backtest(stock, MACD, cash=100000, commission=0.002)
         stats = bt.optimize(position_size = range(25,100,5), maximize = optim_func, max_tries = 50)
-        st.write("Trade(s) Placed:")
+        st.write(f"{len(stats['_trades'].index)} Trade(s) Placed:")
         st.dataframe(stats['_trades'][['Size', 'EntryBar', 'ExitBar',  'EntryPrice', 'ExitPrice', 'PnL', 'ReturnPct', 'EntryTime', 'ExitTime']])
         st.write("Backtesting Stats:")
         st.dataframe(stats, use_container_width = True)
@@ -73,7 +74,7 @@ elif strategy == 'MeanReversion':
     with st.spinner("testing.."):
         bt = Backtest(stock, MeanReversion, cash=100000, commission=0.002)
         stats = bt.optimize(position_size = range(25,100,5), maximize = optim_func, max_tries = 50)
-        st.write("Trade(s) Placed:")
+        st.write(f"{len(stats['_trades'].index)} Trade(s) Placed:")
         st.dataframe(stats['_trades'][['Size', 'EntryBar', 'ExitBar',  'EntryPrice', 'ExitPrice', 'PnL', 'ReturnPct', 'EntryTime', 'ExitTime']])
         st.write("Backtesting Stats:")
         st.dataframe(stats, use_container_width = True)
@@ -88,7 +89,7 @@ elif strategy == 'SwingTrading':
                             bar_limit = range(10,30,5),
                             rsi_limit = range(30,50,5),
                             maximize = optim_func, max_tries = 50)
-        st.write("Trade(s) Placed:")
+        st.write(f"{len(stats['_trades'].index)} Trade(s) Placed:")
         st.dataframe(stats['_trades'][['Size', 'EntryBar', 'ExitBar',  'EntryPrice', 'ExitPrice', 'PnL', 'ReturnPct', 'EntryTime', 'ExitTime']])
         st.write("Backtesting Stats:")
         st.dataframe(stats, use_container_width = True)
@@ -103,7 +104,7 @@ elif strategy == 'RsiOscillator':
                             lower_bound = range(10,60,10),
                             rsi_window = range(7,15,2),
                             maximize = optim_func, max_tries = 50)
-        st.write("Trade(s) Placed:")
+        st.write(f"{len(stats['_trades'].index)} Trade(s) Placed:")
         st.dataframe(stats['_trades'][['Size', 'EntryBar', 'ExitBar',  'EntryPrice', 'ExitPrice', 'PnL', 'ReturnPct', 'EntryTime', 'ExitTime']])
         st.write("Backtesting Stats:")
         st.dataframe(stats, use_container_width = True)
@@ -112,16 +113,42 @@ elif strategy == 'RsiOscillator':
 
 stock = stock.reset_index()
 
-# candlestick plot 
-# ADD TRADES AS VERTICAL BARS TO THE CANDLESTICKS PLOT AFTER TEST RUNS
+# candlestick plot w trade indicators
 
-fig = go.Figure(data=[go.Candlestick(x=stock.index,
-                                     open=stock['Open'],
-                                     high=stock['High'],
-                                     low=stock['Low'],
-                                     close=stock['Close'])])
+candle = go.Candlestick(x=stock.index,
+                        open=stock['Open'],
+                        high=stock['High'],
+                        low=stock['Low'],
+                        close=stock['Close'])
 
-st.plotly_chart(fig)
+enter_trade = go.Scatter(
+        x=stats['_trades']['EntryBar'],
+        y=stats['_trades']['EntryPrice'].apply(lambda x: x*1.1),
+        mode="markers",
+        marker=dict(symbol='triangle-up-open'),
+        name = "Entry Trade"
+    )
+
+exit_trade = go.Scatter(
+        x=stats['_trades']['ExitBar'],
+        y=stats['_trades']['ExitPrice'].apply(lambda x: x*1.1),
+        mode="markers",
+        marker=dict(symbol='triangle-down-open'),
+        name = "Exit Trade"     
+    )
+
+fig_trades = go.Figure(candle)
+fig_trades = make_subplots(rows = 1, cols = 1)
+fig_trades.add_trace(enter_trade, row = 1, col = 1)
+fig_trades.add_trace(exit_trade, row = 1, col = 1)
+fig_trades.add_trace(candle, row = 1, col = 1)
+
+fig_trades.update_layout(
+    title=dict(text=f"{ticker} Backtested Trades", font=dict(size=24), yref='paper')
+)
+
+
+st.plotly_chart(fig_trades)
 
 
 lower_bound, upper_bound = st.select_slider(
