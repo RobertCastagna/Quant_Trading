@@ -11,5 +11,3 @@ seaborn
 openpyxl
 plotly
 st-pages
-os
-sys
