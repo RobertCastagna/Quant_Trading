@@ -62,7 +62,7 @@ strategy = st.selectbox(
 if strategy == 'MACD':
     with st.spinner("testing.."):
         bt = Backtest(stock, MACD, cash=100000, commission=0.002)
-        stats = bt.optimize(position_size = range(25,100,5), maximize = optim_func, max_tries = 50)
+        stats = bt.optimize(position_size = range(25,100,5), maximize = optim_func, max_tries = 200)
         st.write(f"{len(stats['_trades'].index)} Trade(s) Placed:")
         st.dataframe(stats['_trades'][['Size', 'EntryBar', 'ExitBar',  'EntryPrice', 'ExitPrice', 'PnL', 'ReturnPct', 'EntryTime', 'ExitTime']], use_container_width = True)
         st.write("Backtesting Stats:")
@@ -73,7 +73,7 @@ if strategy == 'MACD':
 elif strategy == 'MeanReversion':
     with st.spinner("testing.."):
         bt = Backtest(stock, MeanReversion, cash=100000, commission=0.002)
-        stats = bt.optimize(position_size = range(25,100,5), maximize = optim_func, max_tries = 50)
+        stats = bt.optimize(position_size = range(25,100,5), maximize = optim_func, max_tries = 200)
         st.write(f"{len(stats['_trades'].index)} Trade(s) Placed:")
         st.dataframe(stats['_trades'][['Size', 'EntryBar', 'ExitBar',  'EntryPrice', 'ExitPrice', 'PnL', 'ReturnPct', 'EntryTime', 'ExitTime']], use_container_width = True)
         st.write("Backtesting Stats:")
@@ -88,7 +88,7 @@ elif strategy == 'SwingTrading':
                             rsi_swing_window = range(3,6,1),
                             bar_limit = range(10,30,5),
                             rsi_limit = range(30,50,5),
-                            maximize = optim_func, max_tries = 50)
+                            maximize = optim_func, max_tries = 200)
         st.write(f"{len(stats['_trades'].index)} Trade(s) Placed:")
         st.dataframe(stats['_trades'][['Size', 'EntryBar', 'ExitBar',  'EntryPrice', 'ExitPrice', 'PnL', 'ReturnPct', 'EntryTime', 'ExitTime']], use_container_width = True)
         st.write("Backtesting Stats:")
@@ -103,7 +103,7 @@ elif strategy == 'RsiOscillator':
                             upper_bound = range(50,90,10),
                             lower_bound = range(10,60,10),
                             rsi_window = range(7,15,2),
-                            maximize = optim_func, max_tries = 50)
+                            maximize = optim_func, max_tries = 200)
         st.write(f"{len(stats['_trades'].index)} Trade(s) Placed:")
         st.dataframe(stats['_trades'][['Size', 'EntryBar', 'ExitBar',  'EntryPrice', 'ExitPrice', 'PnL', 'ReturnPct', 'EntryTime', 'ExitTime']], use_container_width = True)
         st.write("Backtesting Stats:")
