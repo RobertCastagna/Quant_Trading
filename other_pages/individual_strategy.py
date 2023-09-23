@@ -25,6 +25,8 @@ show_pages(
     ]
 )
 
+st.set_page_config(layout="wide")
+
 # pick ticker and time interval
 ticker_options = pd.read_excel('indicators.xlsx')
 
@@ -51,6 +53,7 @@ stock = yf.download(ticker, start=one_month_lag_date)[
 def optim_func(series):
     if series['# Trades'] < 10:
         return -1
+    # highest return for lowest time in the market & # trades >= 10 
     return series["Equity Final [$]"] / series ["Exposure Time [%]"]
 
 
@@ -62,7 +65,7 @@ strategy = st.selectbox(
 if strategy == 'MACD':
     with st.spinner("testing.."):
         bt = Backtest(stock, MACD, cash=100000, commission=0.002)
-        stats = bt.optimize(position_size = range(25,100,5), maximize = optim_func, max_tries = 200)
+        stats = bt.optimize(position_size = range(25,100,5), maximize = optim_func, max_tries = 500)
         st.write(f"{len(stats['_trades'].index)} Trade(s) Placed:")
         st.dataframe(stats['_trades'][['Size', 'EntryBar', 'ExitBar',  'EntryPrice', 'ExitPrice', 'PnL', 'ReturnPct', 'EntryTime', 'ExitTime']], use_container_width = True)
         st.write("Backtesting Stats:")
@@ -73,7 +76,7 @@ if strategy == 'MACD':
 elif strategy == 'MeanReversion':
     with st.spinner("testing.."):
         bt = Backtest(stock, MeanReversion, cash=100000, commission=0.002)
-        stats = bt.optimize(position_size = range(25,100,5), maximize = optim_func, max_tries = 200)
+        stats = bt.optimize(position_size = range(25,100,5), maximize = optim_func, max_tries = 500)
         st.write(f"{len(stats['_trades'].index)} Trade(s) Placed:")
         st.dataframe(stats['_trades'][['Size', 'EntryBar', 'ExitBar',  'EntryPrice', 'ExitPrice', 'PnL', 'ReturnPct', 'EntryTime', 'ExitTime']], use_container_width = True)
         st.write("Backtesting Stats:")
@@ -88,7 +91,7 @@ elif strategy == 'SwingTrading':
                             rsi_swing_window = range(3,6,1),
                             bar_limit = range(10,30,5),
                             rsi_limit = range(30,50,5),
-                            maximize = optim_func, max_tries = 200)
+                            maximize = optim_func, max_tries = 500)
         st.write(f"{len(stats['_trades'].index)} Trade(s) Placed:")
         st.dataframe(stats['_trades'][['Size', 'EntryBar', 'ExitBar',  'EntryPrice', 'ExitPrice', 'PnL', 'ReturnPct', 'EntryTime', 'ExitTime']], use_container_width = True)
         st.write("Backtesting Stats:")
@@ -102,8 +105,8 @@ elif strategy == 'RsiOscillator':
         stats = bt.optimize(position_size = range(25,100,5),
                             upper_bound = range(50,90,10),
                             lower_bound = range(10,60,10),
-                            rsi_window = range(7,15,2),
-                            maximize = optim_func, max_tries = 200)
+                            rsi_window = range(10,18,2),
+                            maximize = optim_func, max_tries = 500)
         st.write(f"{len(stats['_trades'].index)} Trade(s) Placed:")
         st.dataframe(stats['_trades'][['Size', 'EntryBar', 'ExitBar',  'EntryPrice', 'ExitPrice', 'PnL', 'ReturnPct', 'EntryTime', 'ExitTime']], use_container_width = True)
         st.write("Backtesting Stats:")
@@ -114,43 +117,6 @@ elif strategy == 'RsiOscillator':
 stock = stock.reset_index()
 
 # candlestick plot w trade indicators
-
-candle = go.Candlestick(x=stock.index,
-                        open=stock['Open'],
-                        high=stock['High'],
-                        low=stock['Low'],
-                        close=stock['Close'])
-
-enter_trade = go.Scatter(
-        x=stats['_trades']['EntryBar'],
-        y=stats['_trades']['EntryPrice'].apply(lambda x: x*1.1),
-        mode="markers",
-        marker=dict(symbol='triangle-up-open'),
-        name = "Entry Trade"
-    )
-
-exit_trade = go.Scatter(
-        x=stats['_trades']['ExitBar'],
-        y=stats['_trades']['ExitPrice'].apply(lambda x: x*1.1),
-        mode="markers",
-        marker=dict(symbol='triangle-down-open'),
-        name = "Exit Trade"     
-    )
-
-fig_trades = go.Figure(candle)
-fig_trades = make_subplots(rows = 1, cols = 1)
-fig_trades.add_trace(enter_trade, row = 1, col = 1)
-fig_trades.add_trace(exit_trade, row = 1, col = 1)
-fig_trades.add_trace(candle, row = 1, col = 1)
-
-fig_trades.update_layout(
-    title=dict(text=f"{ticker} Backtested Trades", font=dict(size=24), yref='paper')
-)
-
-
-st.plotly_chart(fig_trades)
-
-
 lower_bound, upper_bound = st.select_slider(
     'Select RSI bounds',
     options=range(10,95,5),
@@ -169,30 +135,84 @@ stock['hist'] = hist
 stock['Date'] = stock['Date'].dt.tz_localize(None) 
 stock['Date'] = stock['Date'].apply(lambda x: pd.Timestamp(x))
 stock['Date'] = stock['Date'].dt.date
-stock = stock.set_index('Date')
 
 
-# Plot RSI
-fig_rsi, ax_rsi= plt.subplots()
-plt.xticks(rotation=90)
-ax_rsi.plot(stock['RSI'], label='RSI')
-ax_rsi.set_xticklabels(labels=stock.index, fontdict={"fontsize": 8})
-plt.legend()
-ax_rsi.axhline(y=lower_bound, color='red', linestyle='--')
-ax_rsi.axhline(y=upper_bound, color='green', linestyle='--')
-st.pyplot(fig_rsi)
+candle = go.Candlestick(x=stock['Date'],
+                        open=stock['Open'],
+                        high=stock['High'],
+                        low=stock['Low'],
+                        close=stock['Close'],
+                        name = "Candles")
 
-# Plot MACD
-fig_macd, ax_macd= plt.subplots()
-plt.xticks(rotation=90)
-stock = stock[stock['MACD'].notna()]
-ax_macd.plot(stock['MACD'], label='MACD')
-ax_macd.plot(stock['signal'], label='Signal')
-ax_macd.bar(stock.index, stock['hist'], color = 'green', tick_label = stock.index)
-ax_macd.set_xticklabels(labels=stock.index, fontdict={"fontsize": 5})
-plt.legend()
-ax_macd.axhline(y=0, color='black', linestyle='--')
-st.pyplot(fig_macd)
+enter_trade = go.Scatter(
+        x=stats['_trades']['EntryTime'],
+        y=stats['_trades']['EntryPrice'].apply(lambda x: x*1.1),
+        mode="markers",
+        marker=dict(symbol='triangle-up-open'),
+        name = "Entry Trade"
+)
 
+exit_trade = go.Scatter(
+        x=stats['_trades']['ExitTime'],
+        y=stats['_trades']['ExitPrice'].apply(lambda x: x*1.1),
+        mode="markers",
+        marker=dict(symbol='triangle-down-open'),
+        name = "Exit Trade"
+)
 
+rsi_chart = go.Scatter(
+    x=stock['Date'],
+    y=stock['RSI'],
+    name = "RSI",
+    line_color='blue'
+)
+
+macd_line = go.Scatter(
+    x=stock['Date'],
+    y=stock['MACD'],
+    name = "MACD"
+)
+
+ema_signal = go.Scatter(
+    x=stock['Date'],
+    y=stock['signal'],
+    name = "EMA Signal"
+)
+
+volume_bars = go.Bar(
+    x=stock['Date'],
+    y=stock['hist'],
+    marker={
+        "color": "lightsteelblue",
+    },
+    opacity=0.5,
+    name = "Difference"
+)
+tickmode='linear'
+
+fig_trades = make_subplots(rows = 3, cols = 1, shared_xaxes=True, specs=[[{"secondary_y": True}], [{"secondary_y": False}], [{"secondary_y": False}]])
+# plot candles
+fig_trades.add_trace(candle, row = 1, col = 1)
+fig_trades.add_trace(enter_trade, row = 1, col = 1)
+fig_trades.add_trace(exit_trade, row = 1, col = 1)
+# plot rsi
+fig_trades.add_trace(rsi_chart, row = 2, col = 1)
+fig_trades.add_hline(y = lower_bound, opacity = 0.5, line_width = 1, row = 2, col = 1, line_dash="dash", line_color="green")
+fig_trades.add_hline(y = upper_bound, opacity = 0.5, line_width = 1, row = 2, col = 1, line_dash="dash", line_color="red")
+
+# plot macd
+fig_trades.add_trace(volume_bars, row = 3, col = 1, secondary_y=False)
+fig_trades.add_hline(y = 0, opacity = 0.5, line_width = 1, row = 3, col = 1, line_dash="dash", line_color="black")
+fig_trades.add_trace(macd_line, row = 3, col = 1)
+fig_trades.add_trace(ema_signal, row = 3, col = 1)
+fig_trades.update_xaxes(
+    rangebreaks=[dict(bounds=["sat", "mon"])]
+)
+fig_trades.update_layout(
+    title=dict( text=f"{ticker} Backtested Trades", font=dict(size=24), yref='paper'),
+    xaxis_rangeslider_visible=False,
+    height=1200
+)
+
+st.plotly_chart(fig_trades, use_container_width=True, height=800)
 

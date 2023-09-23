@@ -25,6 +25,7 @@ show_pages(
     ]
 )
 
+st.set_page_config(layout="wide")
 
 ticker_options = pd.read_excel('indicators.xlsx')
 
@@ -56,7 +57,8 @@ filtered_df = filtered_df.set_index('TimeOfDay').drop('Datetime', axis = 1)
 
 price_chart = go.Scatter(
     x=filtered_df.index,
-    y=filtered_df.Close
+    y=filtered_df.Close,
+    name = '5 min price'
 )
 
 volume_bars = go.Bar(
@@ -75,7 +77,7 @@ fig_candle.add_trace(volume_bars, secondary_y=False)
 fig_candle.update_layout(
     title=dict(text=f"{ticker} Daily Data", font=dict(size=24), yref='paper')
 )
-st.plotly_chart(fig_candle)
+st.plotly_chart(fig_candle, use_container_width=True, height=800)
 
 # output securites basics for 2 day history
 basics_data = yf.Ticker(ticker)
