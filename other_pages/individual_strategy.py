@@ -21,7 +21,8 @@ from backtest import MACD, MeanReversion, SwingTrading, RsiOscillator
 show_pages(
     [
         Page("streamlit_app.py", "Home"),
-        Page("other_pages/individual_strategy.py", "Backtest")
+        Page("other_pages/individual_strategy.py", "Backtest"),
+        Page("other_pages/portfolio_builder.py", "Watchlist")
     ]
 )
 
@@ -30,7 +31,7 @@ st.set_page_config(layout="wide")
 # pick ticker and time interval
 ticker_options = pd.read_excel('indicators.xlsx')
 
-options = ticker_options['tickers']
+options = ticker_options[ticker_options['removed'] == False]['tickers']
 
 ticker = st.selectbox(
     'Which Security are we lookin at losing money on today?',
