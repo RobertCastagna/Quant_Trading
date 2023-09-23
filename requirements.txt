@@ -11,4 +11,3 @@ seaborn
 openpyxl
 plotly
 st-pages
---upgrade pip
