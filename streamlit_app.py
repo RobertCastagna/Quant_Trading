@@ -21,7 +21,7 @@ from backtest import MACD, MeanReversion, SwingTrading, RsiOscillator
 show_pages(
     [
         Page("streamlit_app.py", "Home"),
-        Page("other_pages/individual_strategy.py", "Backtest"),
+        Page("other_pages/individual_strategy.py", "Strategy"),
         Page("other_pages/portfolio_builder.py", "Watchlist")
 
     ]
@@ -67,8 +67,9 @@ volume_bars = go.Bar(
     x=filtered_df.index,
     y=filtered_df['Volume'],
     showlegend=False,
+    opacity=0.2,
     marker={
-        "color": "lightsteelblue",
+        "color": "purple",
     }
 )
 
@@ -84,7 +85,7 @@ st.plotly_chart(fig_candle, use_container_width=True, height=800)
 # output securites basics for 2 day history
 basics_data = yf.Ticker(ticker)
 basics = basics_data.history(period='2d', interval='1d')
-st.write("Securties Basics:")
+st.title("Securties Basics")
 st.dataframe(basics.sort_index(ascending=False), use_container_width = True)
 
 
@@ -160,5 +161,5 @@ def highlight(col):
         for c in col.values:
             return ['background-color: red' if c == 'sell' else 'background-color: green' if c == 'buy' else '' for c in col.values]
 
-st.write("Indicator-based trade signals for last 2 days:")
+st.title("Indicator Based Signals")
 st.dataframe(stock_output[:2].style.apply(highlight), use_container_width = True) #

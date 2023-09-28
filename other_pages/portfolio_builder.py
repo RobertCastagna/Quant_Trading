@@ -21,7 +21,7 @@ st.set_page_config(layout="wide")
 show_pages(
     [
         Page("streamlit_app.py", "Home"),
-        Page("other_pages/individual_strategy.py", "Backtest"),
+        Page("other_pages/individual_strategy.py", "Strategy"),
         Page("other_pages/portfolio_builder.py", "Watchlist")
 
     ]
