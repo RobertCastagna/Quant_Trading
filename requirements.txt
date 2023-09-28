@@ -11,3 +11,5 @@ seaborn
 openpyxl
 plotly
 st-pages
+math
+scipy
