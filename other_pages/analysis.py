@@ -45,12 +45,15 @@ for ticker in options:
 df = pd.concat(symbols)
 df = df.reset_index()
 df = df[['Date', 'Close', 'Symbol']]
+print(df.head())
 df_pivot=df.pivot(index='Date',columns='Symbol',values='Close').reset_index()
+st.dataframe(df_pivot.head())
 
 corr_df = df_pivot.corr(method='pearson')
-st.dataframe(corr_df)
-corr_df.reset_index()
-st.dataframe(corr_df)
+#reset symbol as index (rather than 0-X)
+st.dataframe(corr_df.head().reset_index())
+#del corr_df.index.name
+st.dataframe(corr_df.head(10))
 
 fig, ax = plt.subplots()
 ax = seaborn.heatmap(corr_df,  ax=ax, annot=True, cmap='RdYlGn')
