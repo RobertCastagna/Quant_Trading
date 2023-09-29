@@ -56,6 +56,7 @@ print(corr_df.head().reset_index())
 print(corr_df.head(10))
 
 fig, ax = plt.subplots()
-ax = seaborn.heatmap(corr_df,  ax=ax, annot=True, cmap='RdYlGn')
+ax = seaborn.clustermap(corr_df, annot=True, cmap='RdYlGn')
 plt.show()
 st.write(fig)
+
