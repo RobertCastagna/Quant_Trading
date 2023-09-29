@@ -26,10 +26,9 @@ options = ticker_options[ticker_options['removed'] == False]['tickers']
 
 
 start = dt.date.today() - dt.timedelta(3)
-col_L_pad, col1, col2, col_R_pad = st.columns([1,1,1,1])
+col1, col_L_pad,  col2, col_R_pad = st.columns([1,1,1,1])
+
 with col1:
-    st.title("Correlation Plot")
-with col2:
     start = st.date_input("Enter Start Date for Historical Data", start)
 
 
