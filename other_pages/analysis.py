@@ -46,7 +46,7 @@ df = pd.concat(symbols)
 df = df.reset_index()
 df = df[['Date', 'Close', 'Symbol']]
 df.head()
-df_pivot=df.pivot(['Date','Symbol','Close']).reset_index()
+df_pivot=df.pivot(columns=['Date','Symbol','Close']).reset_index()
 df_pivot.head()
 
 corr_df = df_pivot.corr(method='pearson')
