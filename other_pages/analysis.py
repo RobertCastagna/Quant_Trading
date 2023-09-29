@@ -48,6 +48,7 @@ df = df[['Date', 'Close', 'Symbol']]
 df_pivot=df.pivot(index='Date',columns='Symbol',values='Close').reset_index()
 
 corr_df = df_pivot.corr(method='pearson')
+st.dataframe(corr_df)
 corr_df.reset_index()
 st.dataframe(corr_df)
 
