@@ -24,6 +24,7 @@ show_pages(
     [
         Page("streamlit_app.py", "Home"),
         Page("other_pages/individual_strategy.py", "Strategy"),
+        Page("other_pages/analysis.py", "Correlation Tool"),
         Page("other_pages/portfolio_builder.py", "Watchlist")
     ]
 )
