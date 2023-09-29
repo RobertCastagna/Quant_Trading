@@ -55,7 +55,7 @@ print(corr_df.head().reset_index())
 print(corr_df.head(10))
 
 fig, ax = plt.subplots()
-seaborn.heatmap(corr_df, ax=ax)
+seaborn.heatmap(corr_df, ax=ax, annot=True)
 st.write(fig)
 
 
