@@ -25,7 +25,7 @@ ticker_options = pd.read_excel('indicators.xlsx')
 options = ticker_options[ticker_options['removed'] == False]['tickers']
 
 
-start = dt.date.today()
+start = dt.date.today() - dt.timedelta(3)
 col_L_pad, col1, col2, col_R_pad = st.columns([1,1,1,1])
 with col1:
     st.title("Correlation Plot")
@@ -45,15 +45,10 @@ for ticker in options:
 df = pd.concat(symbols)
 df = df.reset_index()
 df = df[['Date', 'Close', 'Symbol']]
-df.head()
-df_pivot=df.pivot(columns=['Date','Symbol','Close']).reset_index()
-df_pivot.head()
+df_pivot=df.pivot(index='Date',columns='Symbol',values='Close').reset_index()
 
 corr_df = df_pivot.corr(method='pearson')
-#reset symbol as index (rather than 0-X)
-corr_df.head().reset_index()
-#del corr_df.index.name
-corr_df.head(10)
+corr_df.reset_index()
 
 fig, ax = plt.subplots()
 ax = seaborn.heatmap(corr_df,  ax=ax, annot=True, cmap='RdYlGn')
