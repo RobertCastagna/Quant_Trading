@@ -49,6 +49,7 @@ df_pivot=df.pivot(index='Date',columns='Symbol',values='Close').reset_index()
 
 corr_df = df_pivot.corr(method='pearson')
 corr_df.reset_index()
+st.dataframe(corr_df)
 
 fig, ax = plt.subplots()
 ax = seaborn.heatmap(corr_df,  ax=ax, annot=True, cmap='RdYlGn')
