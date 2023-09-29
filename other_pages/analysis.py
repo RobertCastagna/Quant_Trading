@@ -47,7 +47,6 @@ df = df.reset_index()
 df = df[['Date', 'Close', 'Symbol']]
 print(df.head())
 df_pivot=df.pivot(index='Date',columns='Symbol',values='Close').reset_index()
-st.dataframe(df_pivot.head())
 
 corr_df = df_pivot.corr(method='pearson')
 #reset symbol as index (rather than 0-X)
