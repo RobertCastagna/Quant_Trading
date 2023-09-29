@@ -57,5 +57,5 @@ print(corr_df.head(10))
 fig, ax = plt.subplots()
 seaborn.clustermap(corr_df, annot=True, cmap='RdYlGn')
 plt.show()
-st.write(plt)
+st.pyplot(fig)
 
