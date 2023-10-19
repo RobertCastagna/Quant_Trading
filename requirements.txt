@@ -12,4 +12,3 @@ openpyxl
 plotly
 st-pages
 scipy
-yahoo_fin==0.8.9.1
