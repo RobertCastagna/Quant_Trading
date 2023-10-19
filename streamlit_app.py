@@ -15,6 +15,7 @@ from plotly.subplots import make_subplots
 from st_pages import Page, show_pages
 sys.path.insert(0, './other_pages')
 from backtest import MACD, MeanReversion, SwingTrading, RsiOscillator
+import yahoo_fin.stock_info as si
 
 # pick security and time frame
 
@@ -82,15 +83,14 @@ fig_candle.update_layout(
 )
 st.plotly_chart(fig_candle, use_container_width=True, height=800)
 
-# output securites basics for 2 day history
+# output securites basics 
 basics_data = yf.Ticker(ticker)
-basics = basics_data.history(period='2d', interval='1d')
+basics = basics_data.history(period='1d', interval='1d')[['Open','High','Low','Close','Volume']].reset_index().drop(['Date'], axis=1)
 st.title("Securties Basics")
-st.dataframe(basics.sort_index(ascending=False), use_container_width = True)
-
+perf_ratios = si.get_quote_table(ticker, dict_result=False).set_index('attribute').T[['PE Ratio (TTM)','Beta (5Y Monthly)','52 Week Range','Market Cap']].reset_index().drop(['index'], axis=1)
+st.dataframe(basics.join(perf_ratios).set_index('Open'), use_container_width = True)
 
 # get data for input security and timeframe
-
 today = date.today() - dt.timedelta(90)
 one_month_lag_date = today.strftime('%Y-%m-%d')
 

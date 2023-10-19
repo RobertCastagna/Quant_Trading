@@ -12,3 +12,4 @@ openpyxl
 plotly
 st-pages
 scipy
+yahoo_fin
