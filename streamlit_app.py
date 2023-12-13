@@ -35,7 +35,7 @@ ticker_options = pd.read_excel('indicators.xlsx')
 options = ticker_options[ticker_options['removed'] == False]['tickers']
 
 ticker = st.selectbox(
-    'Which Security are we lookin at losing money on today?',
+    'Which security are we trading today?',
     (options))
 
 
