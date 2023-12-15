@@ -3,15 +3,6 @@
 
 > Live demo [_here_](https://quanttrading.streamlit.app/)
 
-## Table of Contents
-* [General Info](#general-information)
-* [Technologies Used](#technologies-used)
-* [Features](#features)
-* [Screenshots](#screenshots)
-* [Usage](#usage)
-* [Project Status](#project-status)
-* [Acknowledgements](#acknowledgements)
-
 
 ## General Information
 - The purpose of this project was to provide live quantitative insights accessible from anywhere to assist with live trading. It was built on top of free API market data and served as a tool for options pricing, and trade backtesting.  
@@ -46,6 +37,10 @@
 
 ## Project Status
 Project is: no longer being worked on. Improvements may be made in the future, specifically on the backtesting tool. I plan to study trading algorithms in further depth, and will rewrite a significant portion of the existing trading strategies in this repository. 
+
+## Results of Competition
+- Realized a gain of 15.6% over 8 week competition while performance of S&P500 was 
+![image](https://github.com/RobertCastagna/Quant_Trading/assets/49927397/ea283724-b4cb-4539-b130-eac215388e92)
 
 
 ## Acknowledgements
