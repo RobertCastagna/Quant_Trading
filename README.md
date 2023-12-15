@@ -33,7 +33,7 @@
 ### Strategy Page:
 - Options pricing tools (binomial, Black Scholes)
 - MACD, RSI Oscillation, Swing Trading, Mean Reversion backtesting tool
-- 
+  
 ![image](https://github.com/RobertCastagna/Quant_Trading/assets/49927397/2378ff1f-2b9f-4109-aeed-402fb485e1e1)
 ![image](https://github.com/RobertCastagna/Quant_Trading/assets/49927397/5eb7aed3-b841-446b-bcd8-a5a313cbe533)
 
