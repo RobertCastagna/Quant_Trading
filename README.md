@@ -19,9 +19,7 @@
 
 
 ## Technologies Used
-- Tech 1 - version 1.0
-- Tech 2 - version 2.0
-- Tech 3 - version 3.0
+- [python packages](requirements.txt)
 
 
 ## Features
@@ -30,13 +28,13 @@
 - open, close, high, low, volume data
 - indicator based trading signals (red/ green notifications)
   
-![image](https://github.com/RobertCastagna/Quant_Trading/assets/49927397/2378ff1f-2b9f-4109-aeed-402fb485e1e1)
 ![image](https://github.com/RobertCastagna/Quant_Trading/assets/49927397/929f4dc7-a17f-4cad-b1b2-418ca9b655a6)
 
 ### Strategy Page:
 - Options pricing tools (binomial, Black Scholes)
-- MACD, RSI Oscillation, Swing Trading, Mean Reversion backtesting tool 
-
+- MACD, RSI Oscillation, Swing Trading, Mean Reversion backtesting tool
+- 
+![image](https://github.com/RobertCastagna/Quant_Trading/assets/49927397/2378ff1f-2b9f-4109-aeed-402fb485e1e1)
 ![image](https://github.com/RobertCastagna/Quant_Trading/assets/49927397/5eb7aed3-b841-446b-bcd8-a5a313cbe533)
 
 ### Correlation Tool:
