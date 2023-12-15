@@ -25,14 +25,24 @@
 
 
 ## Features
-List the ready features here:
-- Awesome feature 1
-- Awesome feature 2
-- Awesome feature 3
+### Home Page:
+- 5min price data chart
+- open, close, high, low, volume data
+- indicator based trading signals (red/ green notifications)
 
+![image](https://github.com/RobertCastagna/Quant_Trading/assets/49927397/929f4dc7-a17f-4cad-b1b2-418ca9b655a6)
 
-## Usage
-How does one go about using it?
+### Strategy Page:
+- Options pricing tools (binomial, Black Scholes)
+- MACD, RSI Oscillation, Swing Trading, Mean Reversion backtesting tool 
+
+![image](https://github.com/RobertCastagna/Quant_Trading/assets/49927397/5eb7aed3-b841-446b-bcd8-a5a313cbe533)
+
+## Correlation Tool:
+- Simple correlation heatmap 
+
+## Watchlist:
+- editable list of indicators so a user can modify app from their phone 
 
 
 ## Project Status
