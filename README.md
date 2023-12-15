@@ -39,7 +39,8 @@
 Project is: no longer being worked on. Improvements may be made in the future, specifically on the backtesting tool. I plan to study trading algorithms in further depth, and will rewrite a significant portion of the existing trading strategies in this repository. 
 
 ## Results of Competition
-- Realized a gain of 15.6% over 8 week competition while performance of S&P500 was 
+- Realized a gain of 15.6% over 8 week competition while performance of S&P500 was -0.86% over the same time period.
+
 ![image](https://github.com/RobertCastagna/Quant_Trading/assets/49927397/ea283724-b4cb-4539-b130-eac215388e92)
 
 
