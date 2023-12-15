@@ -1,5 +1,5 @@
 # Quant Trading App
-> I developed a trading tool used to compete in the TMX Options trading contest hosted from September 18 to November 10, 2023. Over the 8 weeks, I implemented and applied multiple indicator based trading strategies including RSI, MACD, gap trading methodologies. There were additions made to include a web-based backtesting tool, along with a simple correlation heatmap for mean reversion strategies.
+> I developed a browser and mobile-based trading tool used to compete in the TMX Options trading contest hosted from September 18 to November 10, 2023. Over the 8 weeks, I implemented and applied multiple indicator based trading strategies including RSI, MACD, gap trading methodologies. There were additions made to include a web-based backtesting tool, along with a simple correlation heatmap for mean reversion strategies.
 
 > Live demo [_here_](https://quanttrading.streamlit.app/)
 
