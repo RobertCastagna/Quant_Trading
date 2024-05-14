@@ -14,7 +14,7 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 from st_pages import Page, show_pages
 sys.path.insert(0, './other_pages')
-from backtest import MACD, MeanReversion, SwingTrading, RsiOscillator
+from other_pages.backtest import MACD, MeanReversion, SwingTrading, RsiOscillator
 #import yahoo_fin.stock_info as si
 
 # pick security and time frame
