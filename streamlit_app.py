@@ -76,7 +76,7 @@ fig = make_subplots(
 fig.add_trace(
     go.Scatter(
         x=filtered_df['TimeOfDay'],
-        y=filtered_df['close'],
+        y=filtered_df[:, 'close'],
         name='Price',
         line=dict(color='blue')
     ),
