@@ -45,8 +45,7 @@ today = dt.datetime.today()
 # tickerData = yf.Ticker(ticker)
 # Data = tickerData.history(period='2d',interval='5m')
 ticker_prices = obb.equity.price.historical(symbol = "spy", provider="fmp", start_date=today, end_date=today, interval='5m').to_df()
-
-st.write(type(ticker_prices))
+st.write(type(ticker_prices), ticker_prices.head())
 
 todayData = ticker_prices.reset_index()
 st.write(list(todayData.columns))
