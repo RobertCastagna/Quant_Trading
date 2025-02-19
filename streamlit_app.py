@@ -75,7 +75,7 @@ fig = make_subplots(
 
 fig.add_trace(
     go.Scatter(
-        x=filtered_df.index,
+        x=filtered_df['TimeOfDay'],
         y=filtered_df['close'],
         name='Price',
         line=dict(color='blue')
@@ -85,7 +85,7 @@ fig.add_trace(
 
 fig.add_trace(
     go.Bar(
-        x=filtered_df.index,
+        x=filtered_df['TimeOfDay'],
         y=filtered_df['volume'],
         name='Volume',
         marker_color='green',
