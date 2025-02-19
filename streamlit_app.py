@@ -22,7 +22,8 @@ if "openbb" not in os.listdir('./custom_package'):
     subprocess.check_call([sys.executable, "-m", "pip", "install", "--target=./custom_package", 'https://files.pythonhosted.org/packages/56/a5/092579be3ae2dcadafcbcaa212329ad1c1b94d0cbc35469371a8ecb1b049/openbb-4.4.0.tar.gz'])
 
 sys.path.append('./custom_package')
-import openbb
+from openbb import obb
+
 
 # pick security and time frame
 
