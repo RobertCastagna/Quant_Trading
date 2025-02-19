@@ -68,7 +68,7 @@ filtered_df = filtered_df.set_index('TimeOfDay').drop('date', axis = 1)
 
 price_chart = go.Scatter(
     x=filtered_df.index,
-    y=filtered_df.Close,
+    y=filtered_df.close,
     name = '5 min price'
 )
 
