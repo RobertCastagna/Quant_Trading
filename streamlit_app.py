@@ -69,14 +69,14 @@ st.write(filtered_df['volume'], filtered_df['close'], filtered_df['close'].shape
 fig = make_subplots(
     rows=2, cols=1,
     shared_xaxes=True,
-    row_heights=[0.7, 0.3],  # ratio of top/bottom chart
+    row_heights=[0.8, 0.2],  # ratio of top/bottom chart
     vertical_spacing=0.05    # spacing between the two subplots
 )
 
 fig.add_trace(
     go.Scatter(
         x=filtered_df['TimeOfDay'],
-        y=filtered_df['close'].astype(float),
+        y=filtered_df['close'][0].astype(float),
         name='Price',
         line=dict(color='blue')
     ),
