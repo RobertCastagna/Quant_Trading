@@ -15,7 +15,7 @@ from plotly.subplots import make_subplots
 from st_pages import Page, show_pages
 sys.path.insert(0, './other_pages')
 from other_pages.backtest import MACD, MeanReversion, SwingTrading, RsiOscillator
-#import yahoo_fin.stock_info as si
+from openbb import obb
 
 # pick security and time frame
 
@@ -40,16 +40,20 @@ ticker = st.selectbox(
 
 
 # get only todays data and post dataframe of live open, close, etc..
+today = dt.datetime.today()
 
-tickerData = yf.Ticker(ticker)
-Data = tickerData.history(period='2d',interval='5m')
+# tickerData = yf.Ticker(ticker)
+# Data = tickerData.history(period='2d',interval='5m')
+ticker_prices = obb.equity.price.historical(symbol = "spy", provider="fmp", start_date=today, end_date=today, interval='5m').to_df()
 
-todayData = Data.reset_index()
+st.write(type(ticker_prices))
+
+todayData = ticker_prices.reset_index()
+st.write(list(todayData.columns))
 
 todayData['Datetime'] = todayData['Datetime'].dt.tz_localize(None) 
 todayData['TimeOfDay'] = todayData['Datetime'].apply(lambda x: pd.Timestamp(x))
 
-today = dt.datetime.today()
 filtered_df = todayData[todayData['Datetime'] > today - dt.timedelta(1)]
 filtered_df['TimeOfDay'] = filtered_df['TimeOfDay'].dt.time
 filtered_df['TimeOfDay'] = filtered_df['TimeOfDay'].apply(lambda x: str(x))

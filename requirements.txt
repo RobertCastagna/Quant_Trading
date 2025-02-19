@@ -3,7 +3,7 @@ numpy==1.26.4
 matplotlib
 datetime
 pandas
-yfinance==0.2.28
+yfinance
 backtesting
 datetime
 ta-lib-bin
@@ -12,3 +12,4 @@ openpyxl
 plotly
 st-pages
 scipy
+openbb==4.1.4
