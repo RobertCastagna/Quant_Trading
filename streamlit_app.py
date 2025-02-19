@@ -50,23 +50,19 @@ ticker = st.selectbox(
 today = dt.datetime.today()
 current_date = dt.datetime.now().strftime("%Y-%m-%d")
 
-# tickerData = yf.Ticker(ticker)
-# Data = tickerData.history(period='2d',interval='5m')
-
 obb.account.login(pat=st.secrets["open_bb_pat"])
 ticker_prices = obb.equity.price.historical(symbol = "spy", provider="fmp", start_date=current_date, end_date=current_date, interval='5m').to_df()
-st.write(type(ticker_prices), ticker_prices.head())
 
 todayData = ticker_prices.reset_index()
 st.write(list(todayData.columns))
 
-todayData['Datetime'] = todayData['Datetime'].dt.tz_localize(None) 
-todayData['TimeOfDay'] = todayData['Datetime'].apply(lambda x: pd.Timestamp(x))
+todayData['date'] = todayData['date'].dt.tz_localize(None) 
+todayData['TimeOfDay'] = todayData['date'].apply(lambda x: pd.Timestamp(x))
 
-filtered_df = todayData[todayData['Datetime'] > today - dt.timedelta(1)]
+filtered_df = todayData[todayData['date'] > today - dt.timedelta(1)]
 filtered_df['TimeOfDay'] = filtered_df['TimeOfDay'].dt.time
 filtered_df['TimeOfDay'] = filtered_df['TimeOfDay'].apply(lambda x: str(x))
-filtered_df = filtered_df.set_index('TimeOfDay').drop('Datetime', axis = 1)
+filtered_df = filtered_df.set_index('TimeOfDay').drop('date', axis = 1)
 
 
 # plotly graph
