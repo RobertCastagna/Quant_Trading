@@ -49,7 +49,7 @@ ticker = st.selectbox(
 
 # get only todays data and post dataframe of live open, close, etc..
 today = dt.datetime.today()
-current_date = dt.datetime.now().strftime("%d-%m-%Y")
+current_date = dt.datetime.now().strftime("%Y-%m-%d")
 
 # tickerData = yf.Ticker(ticker)
 # Data = tickerData.history(period='2d',interval='5m')
