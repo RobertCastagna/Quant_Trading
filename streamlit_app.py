@@ -49,10 +49,11 @@ ticker = st.selectbox(
 
 # get only todays data and post dataframe of live open, close, etc..
 today = dt.datetime.today()
+current_date = dt.datetime.now().strftime("%d-%m-%Y")
 
 # tickerData = yf.Ticker(ticker)
 # Data = tickerData.history(period='2d',interval='5m')
-ticker_prices = obb.equity.price.historical(symbol = "spy", provider="fmp", start_date=today, end_date=today, interval='5m').to_df()
+ticker_prices = obb.equity.price.historical(symbol = "spy", provider="fmp", start_date=current_date, end_date=current_date, interval='5m').to_df()
 st.write(type(ticker_prices), ticker_prices.head())
 
 todayData = ticker_prices.reset_index()
