@@ -126,8 +126,8 @@ indicator_data = yf.download(ticker, start=one_month_lag_date)[
 # here, use indicator_data dataframe to calculate all indicators and pass daily trade signals to web
 
 # Calculate RSI
-macd, signal, hist = ta.MACD(indicator_data['Close'], fastperiod=12, slowperiod=26, signalperiod=9)
-daily_rsi = ta.RSI(indicator_data['Close'], 14)
+macd, signal, hist = ta.MACD(indicator_data['Close'].to_numpy(), fastperiod=12, slowperiod=26, signalperiod=9)
+daily_rsi = ta.RSI(indicator_data['Close'].to_numpy(), 14)
 upper_bound = RsiOscillator.upper_bound
 lower_bound = RsiOscillator.lower_bound
 indicator_data['RSI'] = daily_rsi
