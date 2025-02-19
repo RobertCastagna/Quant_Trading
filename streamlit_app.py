@@ -64,7 +64,7 @@ filtered_df['TimeOfDay'] = filtered_df['TimeOfDay'].apply(lambda x: str(x))
 filtered_df = filtered_df.set_index('TimeOfDay').drop('date', axis = 1)
 
 
-st.write(filtered_df.head())
+st.write(filtered_df['volume'], filtered_df['close'])
 
 fig = make_subplots(
     rows=2, cols=1,
