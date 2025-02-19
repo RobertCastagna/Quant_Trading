@@ -15,7 +15,14 @@ from plotly.subplots import make_subplots
 from st_pages import Page, show_pages
 sys.path.insert(0, './other_pages')
 from other_pages.backtest import MACD, MeanReversion, SwingTrading, RsiOscillator
-from openbb import obb
+import subprocess
+import sys
+import os
+if "openbb" not in os.listdir('./custom_package'):
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "--target=./custom_package", 'https://files.pythonhosted.org/packages/56/a5/092579be3ae2dcadafcbcaa212329ad1c1b94d0cbc35469371a8ecb1b049/openbb-4.4.0.tar.gz'])
+
+sys.path.append('./custom_package')
+import openbb
 
 # pick security and time frame
 
