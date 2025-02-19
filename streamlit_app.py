@@ -129,8 +129,8 @@ indicator_data = obb.equity.price.historical(symbol = ticker, provider="fmp", st
 # here, use indicator_data dataframe to calculate all indicators and pass daily trade signals to web
 
 # Calculate RSI
-macd, signal, hist = ta.MACD(indicator_data['Close'].to_numpy(), fastperiod=12, slowperiod=26, signalperiod=9)
-daily_rsi = ta.RSI(indicator_data['Close'].to_numpy(), 14)
+macd, signal, hist = ta.MACD(indicator_data['close'].to_numpy(), fastperiod=12, slowperiod=26, signalperiod=9)
+daily_rsi = ta.RSI(indicator_data['close'].to_numpy(), 14)
 upper_bound = RsiOscillator.upper_bound
 lower_bound = RsiOscillator.lower_bound
 indicator_data['RSI'] = daily_rsi
@@ -140,9 +140,9 @@ indicator_data['MACD'] = macd
 indicator_data['signal'] = signal
 indicator_data['hist'] = hist
 
-indicator_data['Date'] = indicator_data['Date'].dt.tz_localize(None) 
-indicator_data['Date'] = indicator_data['Date'].apply(lambda x: pd.Timestamp(x))
-indicator_data['Date'] = indicator_data['Date'].dt.date
+indicator_data['Date'] = indicator_data['date'].dt.tz_localize(None) 
+indicator_data['Date'] = indicator_data['date'].apply(lambda x: pd.Timestamp(x))
+indicator_data['Date'] = indicator_data['date'].dt.date
 
 # Calculate RSI, IBS, Gap
 rsi_swing_window = SwingTrading.rsi_swing_window
@@ -169,10 +169,10 @@ indicator_data['st_rsi'] = st_rsi
 indicator_data['Swing_trade_signal'] = ['buy' if (indicator_data.Close.iloc[-2]*(100-(open_pct_change/100)) >= indicator_data.Open.iloc[-1]) and (indicator_data.st_bar_strength.iloc[-2] < bar_limit/100) and (indicator_data.st_rsi.iloc[-2] < rsi_limit) else 'sell' if (indicator_data.Close.iloc[-1] < indicator_data.Close.iloc[-2] and indicator_data.Close.iloc[-2] < indicator_data.Close.iloc[-3]) else 'NaN' for col in indicator_data.index]
 indicator_data['Rsi_trade_signal'] = ['buy' if indicator_data.RSI.iloc[-1] < RsiOscillator.lower_bound else 'sell' if indicator_data.RSI.iloc[-1] > RsiOscillator.upper_bound else 'NaN' for col in indicator_data.index]
 indicator_data['MACD_trade_signal'] = ['buy' if (indicator_data.MACD.iloc[-2] <= 0 and indicator_data.MACD.iloc[-1] > 0) else 'sell' if (indicator_data.MACD.iloc[-2] >= 0 and indicator_data.MACD.iloc[-1] < 0) else 'NaN' for col in indicator_data.index]
-indicator_data["Pct_Change_Close"] = indicator_data['Close'].pct_change()
+indicator_data["Pct_Change_Close"] = indicator_data['close'].pct_change()
 
 # select key columns and format output dataframe
-stock = indicator_data.set_index('Date')
+stock = indicator_data.set_index('date')
 stock_output = stock[['Rsi_trade_signal','Swing_trade_signal','MACD_trade_signal','Pct_Change_Close','RSI','MACD','st_rsi','st_bar_strength']].sort_index(ascending=False)
 
 def highlight(col):
