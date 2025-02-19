@@ -51,7 +51,7 @@ today = dt.datetime.today()
 current_date = dt.datetime.now().strftime("%Y-%m-%d")
 
 obb.account.login(pat=st.secrets["open_bb_pat"])
-ticker_prices = obb.equity.price.historical(symbol = "spy", provider="fmp", start_date=current_date, end_date=current_date, interval='5m').to_df()
+ticker_prices = obb.equity.price.historical(symbol = ticker, provider="fmp", start_date=current_date, end_date=current_date, interval='5m').to_df()
 
 todayData = ticker_prices.reset_index()
 
@@ -72,6 +72,7 @@ fig = make_subplots(
 )
 
 st.write(filtered_df['TimeOfDay'].to_numpy().shape,filtered_df['close'].to_numpy().shape)
+st.write(filtered_df.columns)
 
 fig.add_trace(
     go.Scatter(
@@ -108,7 +109,11 @@ st.plotly_chart(fig, use_container_width=True)
 
 # output securites basics 
 basics_data = yf.Ticker(ticker)
+basics = obb.equity.price.historical(symbol = "spy", provider="fmp", start_date=current_date, end_date=current_date, interval='5m').to_df()
+
 basics = basics_data.history(period='1d', interval='1d')[['Open','High','Low','Close','Volume']].reset_index().drop(['Date'], axis=1)
+basics = obb.equity.price.historical(symbol = "spy", provider="fmp", start_date=current_date, end_date=current_date, interval='5m').to_df().reset_index().drop(['date'], axis=1)
+
 st.title("Securties Basics")
 #perf_ratios = si.get_quote_table(ticker, dict_result=False).set_index('attribute').T[['PE Ratio (TTM)','Beta (5Y Monthly)','52 Week Range','Market Cap']].reset_index().drop(['index'], axis=1)
 #st.dataframe(basics.join(perf_ratios).set_index('Open'), use_container_width = True)
