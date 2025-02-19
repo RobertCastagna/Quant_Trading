@@ -18,12 +18,12 @@ from other_pages.backtest import MACD, MeanReversion, SwingTrading, RsiOscillato
 import subprocess
 import sys
 import os
-if "openbb" not in os.listdir('./custom_package'):
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "--target=./custom_package", 'https://files.pythonhosted.org/packages/56/26/28d6c88f876d040ee8f3813a4c11eb54e5cecb3d57fe0a4b79908edd7817/openbb-4.1.3.tar.gz'])
+# if "openbb" not in os.listdir('./custom_package'):
+#     subprocess.check_call([sys.executable, "-m", "pip", "install", "--target=./custom_package", 'https://files.pythonhosted.org/packages/56/26/28d6c88f876d040ee8f3813a4c11eb54e5cecb3d57fe0a4b79908edd7817/openbb-4.1.3.tar.gz'])
 
-sys.path.append('./custom_package')
-from openbb import obb
-
+# sys.path.append('./custom_package')
+# from openbb import obb
+import openbb
 
 # pick security and time frame
 
@@ -53,7 +53,7 @@ current_date = dt.datetime.now().strftime("%Y-%m-%d")
 
 # tickerData = yf.Ticker(ticker)
 # Data = tickerData.history(period='2d',interval='5m')
-ticker_prices = obb.equity.price.historical(symbol = "spy", provider="fmp", start_date=current_date, end_date=current_date, interval='5m').to_df()
+ticker_prices = openbb.obb.equity.price.historical(symbol = "spy", provider="fmp", start_date=current_date, end_date=current_date, interval='5m').to_df()
 st.write(type(ticker_prices), ticker_prices.head())
 
 todayData = ticker_prices.reset_index()
