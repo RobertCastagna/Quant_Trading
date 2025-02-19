@@ -74,7 +74,7 @@ price_chart = go.Scatter(
 
 volume_bars = go.Bar(
     x=filtered_df.index,
-    y=filtered_df['Volume'],
+    y=filtered_df['volume'],
     showlegend=False,
     opacity=0.2,
     marker={
