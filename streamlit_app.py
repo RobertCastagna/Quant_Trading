@@ -71,13 +71,11 @@ fig = make_subplots(
     vertical_spacing=0.05    # spacing between the two subplots
 )
 
-st.write(filtered_df['TimeOfDay'].to_numpy().shape,filtered_df['close'].to_numpy().shape)
-st.write(filtered_df.columns)
-
 fig.add_trace(
     go.Scatter(
-        x=filtered_df['TimeOfDay'].to_numpy(),
-        y=filtered_df['close'].to_numpy(),
+        filtered_df,
+        x='TimeOfDay',
+        y='close',
         name='Price',
         line=dict(color='blue')
     ),
@@ -86,8 +84,9 @@ fig.add_trace(
 
 fig.add_trace(
     go.Bar(
-        x=filtered_df['TimeOfDay'].to_numpy(),
-        y=filtered_df['volume'].to_numpy(),
+        filtered_df,
+        x = 'TimeOfDay',
+        y='volume',
         name='Volume',
         marker_color='green',
         opacity=0.8
@@ -109,10 +108,8 @@ st.plotly_chart(fig, use_container_width=True)
 
 # output securites basics 
 basics_data = yf.Ticker(ticker)
-basics = obb.equity.price.historical(symbol = "spy", provider="fmp", start_date=current_date, end_date=current_date, interval='5m').to_df()
-
 basics = basics_data.history(period='1d', interval='1d')[['Open','High','Low','Close','Volume']].reset_index().drop(['Date'], axis=1)
-basics = obb.equity.price.historical(symbol = "spy", provider="fmp", start_date=current_date, end_date=current_date, interval='5m').to_df().reset_index().drop(['date'], axis=1)
+basics = obb.equity.price.historical(symbol = ticker, provider="fmp", start_date=current_date, end_date=current_date, interval='5m').to_df().reset_index().drop(['date'], axis=1)
 
 st.title("Securties Basics")
 #perf_ratios = si.get_quote_table(ticker, dict_result=False).set_index('attribute').T[['PE Ratio (TTM)','Beta (5Y Monthly)','52 Week Range','Market Cap']].reset_index().drop(['index'], axis=1)
@@ -125,7 +122,8 @@ one_month_lag_date = today.strftime('%Y-%m-%d')
 
 indicator_data = yf.download(ticker, start=one_month_lag_date)[
     ["Open", "High", "Low", "Close", "Volume"]
-]#.reset_index()
+]
+indicator_data = obb.equity.price.historical(symbol = ticker, provider="fmp", start_date=current_date, end_date=one_month_lag_date).to_df()
 
 
 # here, use indicator_data dataframe to calculate all indicators and pass daily trade signals to web
