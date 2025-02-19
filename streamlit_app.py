@@ -61,7 +61,7 @@ todayData['TimeOfDay'] = todayData['date'].apply(lambda x: pd.Timestamp(x))
 filtered_df = todayData[todayData['date'] > today - dt.timedelta(1)]
 filtered_df['TimeOfDay'] = filtered_df['TimeOfDay'].dt.time
 #filtered_df['TimeOfDay'] = filtered_df['TimeOfDay'].apply(lambda x: str(x))
-filtered_df = filtered_df.drop('date', axis = 1)
+#filtered_df = filtered_df.drop('date', axis = 1)
 
 
 fig = make_subplots(
