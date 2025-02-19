@@ -1,5 +1,5 @@
 streamlit==1.28.0
-openbb==4.1.4
+openbb
 ta-lib-bin==0.4.26
 numpy==1.26.4
 matplotlib
