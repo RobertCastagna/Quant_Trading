@@ -67,30 +67,44 @@ filtered_df = filtered_df.set_index('TimeOfDay').drop('date', axis = 1)
 # plotly graph
 st.write(filtered_df.head())
 
-price_chart = go.Scatter(
-    x=filtered_df.index,
-    y=filtered_df.close,
-    name = '5 min price'
-)
-
-volume_bars = go.Bar(
-    x=filtered_df.index,
-    y=filtered_df['volume'],
-    showlegend=False,
-    opacity=0.2,
-    marker={
-        "color": "purple",
-    }
-)
-
-fig_candle = go.Figure(price_chart)
 fig_candle = make_subplots(specs=[[{"secondary_y": True}]])
-fig_candle.add_trace(price_chart, secondary_y=True)
-fig_candle.add_trace(volume_bars, secondary_y=False)
-fig_candle.update_layout(
-    title=dict(text=f"{ticker} Daily Data", font=dict(size=24), yref='paper')
+
+# Add volume bars on the primary y-axis (left)
+fig_candle.add_trace(
+    go.Bar(
+        x=filtered_df.index,
+        y=filtered_df["volume"],
+        showlegend=False,
+        opacity=0.2,
+        marker={"color": "purple"},
+    ),
+    secondary_y=False
 )
+
+# Add the price line on the secondary y-axis (right)
+fig_candle.add_trace(
+    go.Scatter(
+        x=filtered_df.index,
+        y=filtered_df["close"],
+        name="5 min price"
+    ),
+    secondary_y=True
+)
+
+# Update layout, including y-axis titles if desired
+fig_candle.update_layout(
+    title=dict(
+        text=f"{ticker} Daily Data",
+        font=dict(size=24),
+        yref="paper"
+    ),
+    yaxis=dict(title="Volume"),
+    yaxis2=dict(title="Price")
+)
+
+# Render in Streamlit
 st.plotly_chart(fig_candle, use_container_width=True, height=800)
+
 
 # output securites basics 
 basics_data = yf.Ticker(ticker)
@@ -106,7 +120,7 @@ one_month_lag_date = today.strftime('%Y-%m-%d')
 
 indicator_data = yf.download(ticker, start=one_month_lag_date)[
     ["Open", "High", "Low", "Close", "Volume"]
-].reset_index()
+]#.reset_index()
 
 
 # here, use indicator_data dataframe to calculate all indicators and pass daily trade signals to web
