@@ -54,7 +54,6 @@ obb.account.login(pat=st.secrets["open_bb_pat"])
 ticker_prices = obb.equity.price.historical(symbol = "spy", provider="fmp", start_date=current_date, end_date=current_date, interval='5m').to_df()
 
 todayData = ticker_prices.reset_index()
-st.write(list(todayData.columns))
 
 todayData['date'] = todayData['date'].dt.tz_localize(None) 
 todayData['TimeOfDay'] = todayData['date'].apply(lambda x: pd.Timestamp(x))
