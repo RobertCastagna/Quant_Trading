@@ -64,47 +64,47 @@ filtered_df['TimeOfDay'] = filtered_df['TimeOfDay'].apply(lambda x: str(x))
 filtered_df = filtered_df.set_index('TimeOfDay').drop('date', axis = 1)
 
 
-# plotly graph
 st.write(filtered_df.head())
 
-fig_candle = make_subplots(specs=[[{"secondary_y": True}]])
-
-# Add volume bars on the primary y-axis (left)
-fig_candle.add_trace(
-    go.Bar(
-        x=filtered_df.index,
-        y=filtered_df["volume"],
-        showlegend=False,
-        opacity=0.2,
-        marker={"color": "purple"},
-    ),
-    secondary_y=False
+fig = make_subplots(
+    rows=2, cols=1,
+    shared_xaxes=True,
+    row_heights=[0.7, 0.3],  # ratio of top/bottom chart
+    vertical_spacing=0.05    # spacing between the two subplots
 )
 
-# Add the price line on the secondary y-axis (right)
-fig_candle.add_trace(
+fig.add_trace(
     go.Scatter(
         x=filtered_df.index,
-        y=filtered_df["close"],
-        name="5 min price"
+        y=filtered_df['close'],
+        name='Price',
+        line=dict(color='blue')
     ),
-    secondary_y=True
+    row=1, col=1
 )
 
-# Update layout, including y-axis titles if desired
-fig_candle.update_layout(
-    title=dict(
-        text=f"{ticker} Daily Data",
-        font=dict(size=24),
-        yref="paper"
+fig.add_trace(
+    go.Bar(
+        x=filtered_df.index,
+        y=filtered_df['volume'],
+        name='Volume',
+        marker_color='green',
+        opacity=0.8
     ),
-    yaxis=dict(title="Volume"),
-    yaxis2=dict(title="Price")
+    row=2, col=1
 )
 
-# Render in Streamlit
-st.plotly_chart(fig_candle, use_container_width=True, height=800)
+# 4) Update layout for clarity
+fig.update_layout(
+    title=f"{ticker} Daily Data",
+    showlegend=False,
+    height=800  
+)
 
+fig.update_yaxes(title_text="Price", row=1, col=1)
+fig.update_yaxes(title_text="Volume", row=2, col=1)
+
+st.plotly_chart(fig, use_container_width=True)
 
 # output securites basics 
 basics_data = yf.Ticker(ticker)
