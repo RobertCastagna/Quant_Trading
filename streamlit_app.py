@@ -65,6 +65,7 @@ filtered_df = filtered_df.set_index('TimeOfDay').drop('date', axis = 1)
 
 
 # plotly graph
+st.write(filtered_df.head())
 
 price_chart = go.Scatter(
     x=filtered_df.index,
