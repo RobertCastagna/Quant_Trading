@@ -64,14 +64,14 @@ filtered_df['TimeOfDay'] = filtered_df['TimeOfDay'].apply(lambda x: str(x))
 filtered_df = filtered_df.drop('date', axis = 1)
 
 
-st.write(filtered_df['volume'].to_numpy(), filtered_df['close'].to_numpy())
-
 fig = make_subplots(
     rows=2, cols=1,
     shared_xaxes=True,
     row_heights=[0.8, 0.2],  # ratio of top/bottom chart
     vertical_spacing=0.05    # spacing between the two subplots
 )
+
+st.write(filtered_df['TimeOfDay'].to_numpy().shape,filtered_df['close'].to_numpy().shape)
 
 fig.add_trace(
     go.Scatter(
