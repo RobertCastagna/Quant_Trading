@@ -64,7 +64,7 @@ filtered_df['TimeOfDay'] = filtered_df['TimeOfDay'].apply(lambda x: str(x))
 filtered_df = filtered_df.drop('date', axis = 1)
 
 
-st.write(filtered_df['volume'], filtered_df['close'], filtered_df['close'].shape)
+st.write(filtered_df['volume'].to_numpy(), filtered_df['close'].to_numpy())
 
 fig = make_subplots(
     rows=2, cols=1,
@@ -76,7 +76,7 @@ fig = make_subplots(
 fig.add_trace(
     go.Scatter(
         x=filtered_df['TimeOfDay'],
-        y=filtered_df['close'][0].astype(float),
+        y=filtered_df['close'].to_numpy(),
         name='Price',
         line=dict(color='blue')
     ),
@@ -86,7 +86,7 @@ fig.add_trace(
 fig.add_trace(
     go.Bar(
         x=filtered_df['TimeOfDay'],
-        y=filtered_df['volume'].astype(float),
+        y=filtered_df['volume'].to_numpy(),
         name='Volume',
         marker_color='green',
         opacity=0.8
