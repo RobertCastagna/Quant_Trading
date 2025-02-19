@@ -19,7 +19,7 @@ import subprocess
 import sys
 import os
 if "openbb" not in os.listdir('./custom_package'):
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "--target=./custom_package", 'https://files.pythonhosted.org/packages/56/a5/092579be3ae2dcadafcbcaa212329ad1c1b94d0cbc35469371a8ecb1b049/openbb-4.4.0.tar.gz'])
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "--target=./custom_package", 'https://files.pythonhosted.org/packages/56/26/28d6c88f876d040ee8f3813a4c11eb54e5cecb3d57fe0a4b79908edd7817/openbb-4.1.3.tar.gz'])
 
 sys.path.append('./custom_package')
 from openbb import obb
