@@ -51,7 +51,7 @@ today = dt.datetime.today()
 current_date = dt.datetime.now().strftime("%Y-%m-%d")
 
 obb.account.login(pat=st.secrets["open_bb_pat"])
-ticker_prices = obb.equity.price.historical(symbol = ticker, provider="fmp", start_date=current_date, end_date=current_date, interval='5m').to_df()
+ticker_prices = obb.equity.price.historical(symbol = ticker.strip(), provider="fmp", start_date=current_date, end_date=current_date, interval='5m').to_df()
 
 todayData = ticker_prices.reset_index()
 
@@ -68,14 +68,13 @@ fig = make_subplots(
     rows=2, cols=1,
     shared_xaxes=True,
     row_heights=[0.8, 0.2],  # ratio of top/bottom chart
-    vertical_spacing=0.05    # spacing between the two subplots
+    vertical_spacing=0.05    # spacing between subplots
 )
 
 fig.add_trace(
     go.Scatter(
-        filtered_df,
-        x='TimeOfDay',
-        y='close',
+        x=filtered_df['TimeOfDay'],
+        y=filtered_df['close'],
         name='Price',
         line=dict(color='blue')
     ),
@@ -84,9 +83,8 @@ fig.add_trace(
 
 fig.add_trace(
     go.Bar(
-        filtered_df,
-        x = 'TimeOfDay',
-        y='volume',
+        x=filtered_df['TimeOfDay'],
+        y=filtered_df['volume'],
         name='Volume',
         marker_color='green',
         opacity=0.8
@@ -94,11 +92,10 @@ fig.add_trace(
     row=2, col=1
 )
 
-# 4) Update layout for clarity
 fig.update_layout(
     title=f"{ticker} Daily Data",
     showlegend=False,
-    height=800  
+    height=800
 )
 
 fig.update_yaxes(title_text="Price", row=1, col=1)
